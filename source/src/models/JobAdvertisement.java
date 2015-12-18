@@ -18,9 +18,13 @@ public class JobAdvertisement extends JobAccount {
 		super(createBy, location, requiredEducation, workPosition, workType, requiredExperience, carrerFields);
 		this.setTitle(title);
 		this.setResume(resume);
-		this.id++;
+		JobAdvertisement.id++;
 	}
 
+	public long getId(){
+		return JobAdvertisement.id;
+	}
+	
 	public String getTitle() {
 		return title;
 	}

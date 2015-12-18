@@ -15,7 +15,7 @@ public class JobCV extends JobAccount {
 			WorkType workType, Boolean requiredExperience, int age, List<CarrerField> carrerFields) {
 		super(createBy, location, requiredEducation, workPosition, workType, requiredExperience, carrerFields);
 		this.setAge(age);
-		this.id++;
+		JobCV.id++;
 	}
 
 	public long getId() {
