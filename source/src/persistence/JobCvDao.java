@@ -187,7 +187,7 @@ public class JobCvDao extends JobAccountDao {
 		JobCV jobCV = (JobCV) data;
 		try {
 			super.openConnection();
-			super.defineStatement(SqlQueries.UPDATE_JOBCV_SQL_QUERY);
+			super.defineStatement(SqlQueries.UPDATE_JOBCV_SQL_QUERY_SQL_QUERY);
 
 			String educationAsString = EnumUtils.ConvertEnumValueToString(jobCV.getRequiredEducation());
 			String workPositionAsString = EnumUtils.ConvertEnumValueToString(jobCV.getWorkPostion());
@@ -222,7 +222,7 @@ public class JobCvDao extends JobAccountDao {
 
 	private Collection<CarrerField> retrieveAllCarrerFields(int jobCvId) throws SQLException {
 		Collection<String> carrerFieldsAsString = PersistenceHelper.retrieveDataFromConnectionTable(super.connection,
-				SqlQueries.RETRIEVE_ALL_CARRERFIELDS, "carrerfield", jobCvId);
+				SqlQueries.RETRIEVE_ALL_CARRERFIELDS_SQL_QUERY, "carrerfield", jobCvId);
 		Collection<CarrerField> carrerFields = new ArrayList<CarrerField>();
 		for (String carrerFieldAsString : carrerFieldsAsString) {
 			CarrerField carrerField = EnumUtils.ConvertStringToEnumValue(carrerFieldAsString, CarrerField.class);
@@ -234,7 +234,7 @@ public class JobCvDao extends JobAccountDao {
 
 	private Collection<String> retrieveAllLanguages(int jobCvId) throws SQLException {
 		Collection<String> languages = PersistenceHelper.retrieveDataFromConnectionTable(super.connection,
-				SqlQueries.RETRIEVE_ALL_LANGUAGES, "language", jobCvId);
+				SqlQueries.RETRIEVE_ALL_LANGUAGES_SQL_QUERY, "language", jobCvId);
 
 		return languages;
 	}

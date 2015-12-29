@@ -2,6 +2,22 @@ package common;
 
 public class SqlQueries {
 
+	// Persistence helper queries.
+	public static final String INSERT_LOCATION_SQL_QUERY = "INSERT INTO " + "locations(city,country) " + "VALUES(?,?) "
+			+ "ON DUPLICATE KEY UPDATE city=city,country=country;";
+	public static final String INSERT_USERTYPE_SQL_QUERY = "INSERT INTO " + "usertypes(usertype) " + "VALUES(?) "
+			+ "ON DUPLICATE KEY UPDATE usertype=usertype;";
+	public static final String INSERT_EDUCATION_SQL_QUERY = "INSERT INTO " + "educations(education) " + "VALUES(?) "
+			+ "ON DUPLICATE KEY UPDATE education=education;";
+	public static final String INSERT_WORKPOSITION_SQL_QUERY = "INSERT INTO " + "workpositions(workposition) "
+			+ "VALUES(?) " + "ON DUPLICATE KEY UPDATE workposition=workposition;";
+	public static final String INSERT_WORKTYPE_SQL_QUERY = "INSERT INTO " + "worktypes(worktype) " + "VALUES(?) "
+			+ "ON DUPLICATE KEY UPDATE worktype=worktype;";
+	public static final String INSERT_CARRERFIELD_SQL_QUERY = "INSERT INTO " + "carrerfields(carrerfield) "
+			+ "VALUES(?) " + "ON DUPLICATE KEY UPDATE carrerfield=carrerfield;";
+	public static final String INSERT_LANGUAGE_SQL_QUERY = "INSERT INTO " + "languages(language) " + "VALUES(?) "
+			+ "ON DUPLICATE KEY UPDATE language=language;";
+
 	// Users queries.
 	public static final String CREATE_USER_SQL_QUERY = "INSERT INTO Users" + "(username,password,fk_usertype_id) "
 			+ "VALUES(?,?,(SELECT usertype_id FROM usertypes WHERE usertype=?));";
@@ -27,13 +43,13 @@ public class SqlQueries {
 			+ "INNER JOIN educations ON educations.education_id=fk_education_id "
 			+ "INNER JOIN workpositions ON workpositions.workposition_id=fk_workposition_id "
 			+ "INNER JOIN worktypes ON worktypes.worktype_id=fk_worktype_id;";
-	public static final String RETRIEVE_ALL_CARRERFIELDS = "SELECT carrerfield FROM carrerfields "
+	public static final String RETRIEVE_ALL_CARRERFIELDS_SQL_QUERY = "SELECT carrerfield FROM carrerfields "
 			+ "INNER JOIN jobcvs_carrerfields ON carrerfields.carrerfield_id=jobcvs_carrerfields.fk_carrerfield_id "
 			+ "INNER JOIN jobcvs ON ?=jobcvs_carrerfields.fk_jobcv_id;";
-	public static final String RETRIEVE_ALL_LANGUAGES = "SELECT language FROM languages "
+	public static final String RETRIEVE_ALL_LANGUAGES_SQL_QUERY = "SELECT language FROM languages "
 			+ "INNER JOIN jobcvs_languages ON languages.language_id=jobcvs_languages.fk_language_id "
 			+ "INNER JOIN jobcvs ON ?=jobcvs_languages.fk_jobcv_id;";
-	public static final String UPDATE_JOBCV_SQL_QUERY = "UPDATE jobcvs" + "inner join locations "
+	public static final String UPDATE_JOBCV_SQL_QUERY_SQL_QUERY = "UPDATE jobcvs" + "inner join locations "
 			+ "inner join educations " + "inner join workpositions " + "inner join worktypes " + "set "
 			+ "jobcvs.fk_location_id=locations.location_id," + "jobcvs.fk_education_id=educations.education_id,"
 			+ "jobcvs.fk_workposition_id=workpositions.workposition_id,"

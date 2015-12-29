@@ -1,8 +1,8 @@
 package common;
 
 public class EnumUtils {
-	public static <E extends Enum<E>> E ConvertStringToEnumValue(String userTypeAsString, Class<E> type) {
-		E userType = Enum.valueOf(type, userTypeAsString);
+	public static <E extends Enum<E>> E ConvertStringToEnumValue(String enumAsString, Class<E> type) {
+		E userType = Enum.valueOf(type, enumAsString);
 
 		return userType;
 	}
