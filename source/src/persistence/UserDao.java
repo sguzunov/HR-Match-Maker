@@ -6,11 +6,12 @@ import java.util.Collection;
 
 import common.EnumUtils;
 import enums.UserType;
+import helpers.DatabaseHelper;
 import models.User;
 
 public class UserDao extends Dao {
 	private static final String CREATE_USER_SQL_QUERY = "INSERT INTO Users" + "(username,password,fk_usertype_id) "
-			+ "Select ?,?,usertype_id " + "FROM Usertypes" + " WHERE usertype=?;";
+			+ "VALUES(?,?,(SELECT usertype_id FROM usertypes WHERE usertype=?));";
 	private static final String RETRIEVE_ALL_USERS_SQL_QUERY = "SELECT username,usertype " + "FROM users "
 			+ "INNER JOIN usertypes ON " + "users.fk_usertype_id=usertype_id";
 	private static final String UPDATE_USER_PASSWORD_SQL_QUERY = "UPDATE users " + "SET password=? "
@@ -24,15 +25,19 @@ public class UserDao extends Dao {
 	public <E> void create(E data) {
 		User newUser = (User) data;
 		try {
-			super.connection = super.dataSource.getConnection();
-			super.preparedStatement = connection.prepareStatement(CREATE_USER_SQL_QUERY);
+			super.openConnection();
+			super.defineStatement(CREATE_USER_SQL_QUERY);
 
+			// Database requires strings for values.
 			String usertypeAsString = EnumUtils.ConvertEnumValueToString(newUser.getUserType());
 			super.preparedStatement.setString(1, newUser.getUserName());
 			super.preparedStatement.setString(2, newUser.getPassword());
 			super.preparedStatement.setString(3, usertypeAsString);
-			super.preparedStatement.executeUpdate();
 
+			// Add the required user type to database.
+			DatabaseHelper.insertUserTypeIntoDatabase(connection, usertypeAsString);
+
+			super.preparedStatement.executeUpdate();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -51,10 +56,10 @@ public class UserDao extends Dao {
 	public <E> Collection<E> retrieve() throws ClassNotFoundException, SQLException {
 		Collection<E> queryReult = null;
 		try {
-			super.connection = super.dataSource.getConnection();
-			super.preparedStatement = connection.prepareStatement(RETRIEVE_ALL_USERS_SQL_QUERY);
-			super.resultSet = super.preparedStatement.executeQuery();
+			super.openConnection();
+			super.defineStatement(RETRIEVE_ALL_USERS_SQL_QUERY);
 
+			super.resultSet = super.preparedStatement.executeQuery();
 			queryReult = new ArrayList<E>();
 			while (super.resultSet.next()) {
 				String userName = super.resultSet.getString("username");
@@ -89,8 +94,8 @@ public class UserDao extends Dao {
 		User user = (User) data;
 
 		try {
-			super.connection = super.dataSource.getConnection();
-			super.preparedStatement = connection.prepareStatement(UPDATE_USER_PASSWORD_SQL_QUERY);
+			super.openConnection();
+			super.defineStatement(UPDATE_USER_PASSWORD_SQL_QUERY);
 
 			super.preparedStatement.setString(1, user.getPassword());
 			super.preparedStatement.setString(2, user.getUserName());

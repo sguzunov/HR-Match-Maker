@@ -22,6 +22,14 @@ public abstract class Dao {
 
 	public abstract <E> void update(final E data);
 
+	protected void openConnection() throws ClassNotFoundException, SQLException {
+		this.connection = this.dataSource.getConnection();
+	}
+
+	protected void defineStatement(String sqlQuery) throws SQLException {
+		this.preparedStatement = this.connection.prepareStatement(sqlQuery);
+	}
+
 	protected void closeConnection() {
 		try {
 			this.connection.close();
