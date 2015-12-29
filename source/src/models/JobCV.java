@@ -12,10 +12,10 @@ public class JobCV extends JobAccount {
 	private Collection<String> knownLanguages;
 	private int age;
 
-	public JobCV(User createBy, Location location, Education requiredEducation, WorkPosition workPosition,
-			WorkType workType, Boolean requiredExperience, int age, List<CarrerField> carrerFields,
+	public JobCV(int id, User createBy, Location location, Education requiredEducation, WorkPosition workPosition,
+			WorkType workType, Boolean requiredExperience, int age, Collection<CarrerField> carrerFields,
 			Collection<String> knownLanguages) {
-		super(createBy, location, requiredEducation, workPosition, workType, requiredExperience, carrerFields);
+		super(id, createBy, location, requiredEducation, workPosition, workType, requiredExperience, carrerFields);
 		this.setAge(age);
 		this.knownLanguages = knownLanguages;
 	}

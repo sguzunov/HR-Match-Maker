@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collection;
 import java.util.List;
 
 import enums.Education;
@@ -9,16 +10,18 @@ import enums.WorkType;
 import models.contracts.ComparableJobAccount;
 
 public abstract class JobAccount implements ComparableJobAccount {
+	private int id;
 	private User createdBy;
 	private Location location;
 	private Education requiredEducation;
 	private WorkPosition workPosition;
 	private WorkType workType;
 	private Boolean requiredExperience;
-	private List<CarrerField> carrerFields;
+	private Collection<CarrerField> carrerFields;
 
-	public JobAccount(User createBy, Location location, Education requiredEducation, WorkPosition workPosition,
-			WorkType workType, Boolean requiredExperience, List<CarrerField> carrerFields) {
+	public JobAccount(int id, User createBy, Location location, Education requiredEducation, WorkPosition workPosition,
+			WorkType workType, Boolean requiredExperience, Collection<CarrerField> carrerFields) {
+		this.id = id;
 		this.setCreatedBy(createBy);
 		this.setLocation(location);
 		this.setRequiredEducation(requiredEducation);
@@ -26,6 +29,10 @@ public abstract class JobAccount implements ComparableJobAccount {
 		this.setWorkType(workType);
 		this.requiredExperience = requiredExperience;
 		this.carrerFields = carrerFields;
+	}
+
+	public int getId() {
+		return this.id;
 	}
 
 	public User getCreatedBy() {
@@ -82,12 +89,12 @@ public abstract class JobAccount implements ComparableJobAccount {
 	}
 
 	@Override
-	public List<CarrerField> getCarrerField() {
+	public Collection<CarrerField> getCarrerField() {
 		return this.carrerFields;
 	}
 
 	@Override
-	public void setCarrerField(List<CarrerField> carrerField) {
+	public void setCarrerField(Collection<CarrerField> carrerField) {
 		this.carrerFields = carrerField;
 	}
 }

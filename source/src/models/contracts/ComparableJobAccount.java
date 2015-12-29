@@ -1,6 +1,6 @@
 package models.contracts;
 
-import java.util.List;
+import java.util.Collection;
 
 import enums.CarrerField;
 import enums.Education;
@@ -27,7 +27,7 @@ public interface ComparableJobAccount {
 
 	public Boolean isRequiredExperience();
 
-	public List<CarrerField> getCarrerField();
+	public Collection<CarrerField> getCarrerField();
 
-	public void setCarrerField(List<CarrerField> carrerField);
+	public void setCarrerField(Collection<CarrerField> carrerField);
 }

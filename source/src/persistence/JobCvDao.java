@@ -1,29 +1,78 @@
 package persistence;
 
 import java.sql.SQLException;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
 import common.EnumUtils;
+import common.SqlQueries;
 import enums.CarrerField;
-import helpers.DatabaseHelper;
+import enums.Education;
+import enums.UserType;
+import enums.WorkPosition;
+import enums.WorkType;
+import helpers.PersistenceHelper;
 import models.JobCV;
+import models.Location;
+import models.User;
+import persistence.sources.DataSource;
 
 public class JobCvDao extends JobAccountDao {
-	private static final String CREATE_JOBCV_SQL_QUERY = "INSERT INTO jobcvs"
-			+ "(fk_user_id,fk_location_id,fk_education_id,fk_workposition_id,fk_worktype_id,requiredexperience,age) "
-			+ "VALUES(" + "(SELECT user_id FROM users WHERE username=?),"
-			+ "(SELECT location_id FROM locations WHERE city=? AND country=?),"
-			+ "(SELECT education_id FROM educations WHERE education=?),"
-			+ "(SELECT workposition_id FROM workpositions WHERE workposition=?),"
-			+ "(SELECT worktype_id FROM worktypes WHERE worktype=?)," + "?,?" + ");";
-
 	public JobCvDao(DataSource dataSource) {
 		super(dataSource);
 	}
 
 	@Override
 	public <E> E getById(int id) {
-		return null;
+		JobCV jobCV = null;
+		try {
+			super.openConnection();
+			super.defineStatement(SqlQueries.RETRIEVE_JOBCV_BY_ID_SQL_QUERY);
+
+			super.preparedStatement.setInt(1, id);
+			super.resultSet = super.preparedStatement.executeQuery();
+			while (super.resultSet.next()) {
+				String userName = super.resultSet.getString("username");
+				String userTypeAsString = super.resultSet.getString("usertype");
+				String city = super.resultSet.getString("city");
+				String country = super.resultSet.getString("country");
+				String educationAsString = super.resultSet.getString("education");
+				String workPositionAsString = super.resultSet.getString("workposition");
+				String worktypeAsString = super.resultSet.getString("worktype");
+				boolean requiredExperience = super.resultSet.getBoolean("requiredexperience");
+				int age = super.resultSet.getInt("age");
+
+				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
+				Education requiredEducation = EnumUtils.ConvertStringToEnumValue(educationAsString, Education.class);
+				WorkPosition workPosition = EnumUtils.ConvertStringToEnumValue(workPositionAsString,
+						WorkPosition.class);
+				WorkType workType = EnumUtils.ConvertStringToEnumValue(worktypeAsString, WorkType.class);
+				User user = new User(userName, userType);
+				Location location = new Location(city, country);
+				Collection<CarrerField> carrerFields = retrieveAllCarrerFields(id);
+				Collection<String> knownLanguages = retrieveAllLanguages(id);
+				jobCV = new JobCV(id, user, location, requiredEducation, workPosition, workType, requiredExperience,
+						age, carrerFields, knownLanguages);
+			}
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (super.connection != null) {
+				super.closeConnection();
+			}
+			if (super.preparedStatement != null) {
+				super.closePreparedStatement();
+			}
+			if (super.resultSet != null) {
+				super.closeResultSet();
+			}
+		}
+
+		return (E) jobCV;
 	}
 
 	@Override
@@ -31,7 +80,7 @@ public class JobCvDao extends JobAccountDao {
 		JobCV newJobCV = (JobCV) data;
 		try {
 			super.connection = super.dataSource.getConnection();
-			super.preparedStatement = connection.prepareStatement(CREATE_JOBCV_SQL_QUERY);
+			super.preparedStatement = connection.prepareStatement(SqlQueries.CREATE_JOBCV_SQL_QUERY);
 
 			// Database requires strings for values.
 			String educationAsString = EnumUtils.ConvertEnumValueToString(newJobCV.getRequiredEducation());
@@ -47,19 +96,23 @@ public class JobCvDao extends JobAccountDao {
 			super.preparedStatement.setInt(8, newJobCV.getAge());
 
 			// Add required location to the database.
-			DatabaseHelper.insertLocationIntoDatabase(super.connection, newJobCV.getLocation().getCity(),
+			PersistenceHelper.insertLocationIntoDatabase(super.connection, newJobCV.getLocation().getCity(),
 					newJobCV.getLocation().getCountry());
 
 			// Add required education to the database.
-			DatabaseHelper.insertEducationIntoDatabase(super.connection, educationAsString);
+			PersistenceHelper.insertEducationIntoDatabase(super.connection, educationAsString);
 
 			// Add required work position to the database.
-			DatabaseHelper.insertWorkPositionIntoDatabase(super.connection, workPositionAsString);
+			PersistenceHelper.insertWorkPositionIntoDatabase(super.connection, workPositionAsString);
 
 			// Add required work type to the database.
-			DatabaseHelper.insertWorkTypeIntoDatabase(super.connection, workTypeAsString);
+			PersistenceHelper.insertWorkTypeIntoDatabase(super.connection, workTypeAsString);
+
 			super.preparedStatement.executeUpdate();
 
+			int jobcv_last_insert_id = PersistenceHelper.getLastInsertedId(super.connection);
+			this.establishConnectionWithCarrerFields(newJobCV.getCarrerField(), jobcv_last_insert_id);
+			this.establishConnectionWithLanguages(newJobCV.getKnownLanguages(), jobcv_last_insert_id);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -76,19 +129,138 @@ public class JobCvDao extends JobAccountDao {
 
 	@Override
 	public <E> Collection<E> retrieve() throws ClassNotFoundException, SQLException {
-		return null;
+		Collection<E> queryReult = null;
+		try {
+			super.openConnection();
+			super.defineStatement(SqlQueries.RETRIEVE_ALL_JOBCVS_SQL_QUERY);
+
+			super.resultSet = super.preparedStatement.executeQuery();
+			queryReult = new ArrayList<E>();
+			while (super.resultSet.next()) {
+				int jobCvId = super.resultSet.getInt("jobcv_id");
+				String userName = super.resultSet.getString("username");
+				String userTypeAsString = super.resultSet.getString("usertype");
+				String city = super.resultSet.getString("city");
+				String country = super.resultSet.getString("country");
+				String educationAsString = super.resultSet.getString("education");
+				String workPositionAsString = super.resultSet.getString("workposition");
+				String worktypeAsString = super.resultSet.getString("worktype");
+				boolean requiredExperience = super.resultSet.getBoolean("requiredexperience");
+				int age = super.resultSet.getInt("age");
+
+				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
+				Education requiredEducation = EnumUtils.ConvertStringToEnumValue(educationAsString, Education.class);
+				WorkPosition workPosition = EnumUtils.ConvertStringToEnumValue(workPositionAsString,
+						WorkPosition.class);
+				WorkType workType = EnumUtils.ConvertStringToEnumValue(worktypeAsString, WorkType.class);
+				User user = new User(userName, userType);
+				Location location = new Location(city, country);
+				Collection<CarrerField> carrerFields = retrieveAllCarrerFields(jobCvId);
+				Collection<String> knownLanguages = retrieveAllLanguages(jobCvId);
+				JobCV jobCV = new JobCV(jobCvId, user, location, requiredEducation, workPosition, workType,
+						requiredExperience, age, carrerFields, knownLanguages);
+
+				queryReult.add((E) jobCV);
+			}
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (super.connection != null) {
+				super.closeConnection();
+			}
+			if (super.preparedStatement != null) {
+				super.closePreparedStatement();
+			}
+			if (super.resultSet != null) {
+				super.closeResultSet();
+			}
+		}
+
+		return queryReult;
 	}
 
 	@Override
 	public <E> void update(E data) {
+		JobCV jobCV = (JobCV) data;
+		try {
+			super.openConnection();
+			super.defineStatement(SqlQueries.UPDATE_JOBCV_SQL_QUERY);
+
+			String educationAsString = EnumUtils.ConvertEnumValueToString(jobCV.getRequiredEducation());
+			String workPositionAsString = EnumUtils.ConvertEnumValueToString(jobCV.getWorkPostion());
+			String workTypeAsString = EnumUtils.ConvertEnumValueToString(jobCV.getWorkType());
+
+			super.preparedStatement.setBoolean(1, jobCV.isRequiredExperience());
+			super.preparedStatement.setInt(2, jobCV.getAge());
+			super.preparedStatement.setString(3, jobCV.getLocation().getCity());
+			super.preparedStatement.setString(4, jobCV.getLocation().getCountry());
+			super.preparedStatement.setString(5, educationAsString);
+			super.preparedStatement.setString(6, workPositionAsString);
+			super.preparedStatement.setString(7, workTypeAsString);
+
+			super.preparedStatement.executeUpdate();
+
+			// TODO: End logic for updating languages and carrer fields.
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (super.connection != null) {
+				super.closeConnection();
+			}
+			if (super.preparedStatement != null) {
+				super.closePreparedStatement();
+			}
+		}
 
 	}
 
-	private void establishConnectionWithCarrerFields(Collection<CarrerField> carrerFields, int jobcv_last_id) {
+	private Collection<CarrerField> retrieveAllCarrerFields(int jobCvId) throws SQLException {
+		Collection<String> carrerFieldsAsString = PersistenceHelper.retrieveDataFromConnectionTable(super.connection,
+				SqlQueries.RETRIEVE_ALL_CARRERFIELDS, "carrerfield", jobCvId);
+		Collection<CarrerField> carrerFields = new ArrayList<CarrerField>();
+		for (String carrerFieldAsString : carrerFieldsAsString) {
+			CarrerField carrerField = EnumUtils.ConvertStringToEnumValue(carrerFieldAsString, CarrerField.class);
+			carrerFields.add(carrerField);
+		}
+
+		return carrerFields;
+	}
+
+	private Collection<String> retrieveAllLanguages(int jobCvId) throws SQLException {
+		Collection<String> languages = PersistenceHelper.retrieveDataFromConnectionTable(super.connection,
+				SqlQueries.RETRIEVE_ALL_LANGUAGES, "language", jobCvId);
+
+		return languages;
+	}
+
+	// Makes the connection between "jobcvs" table and "carrerfields" table in
+	// many-to-many relationship
+	private void establishConnectionWithCarrerFields(Collection<CarrerField> carrerFields, int jobcv_id)
+			throws SQLException {
 		for (CarrerField carrerField : carrerFields) {
 			String carrerFieldAsString = EnumUtils.ConvertEnumValueToString(carrerField);
-			// TODO: Complete tables connection.
+			PersistenceHelper.insertCarrerFieldIntoDatabase(super.connection, carrerFieldAsString);
+			int carrerField_last_insert_id = PersistenceHelper.getLastInsertedId(super.connection);
+			PersistenceHelper.insertIntoConnectionTable(super.connection,
+					SqlQueries.JOBCVS_CARRERFIELDS_CONNECTION_SQL_QUERY, jobcv_id, carrerField_last_insert_id);
 		}
 	}
 
+	// Makes the connection between "jobcvs" table and "languages" table in
+	// many-to-many relationship
+	private void establishConnectionWithLanguages(Collection<String> languages, int jobcv_last_insert_id)
+			throws SQLException {
+		for (String language : languages) {
+			PersistenceHelper.insertLanguageIntoDatabase(super.connection, language);
+			int language_last_insert_id = PersistenceHelper.getLastInsertedId(super.connection);
+			PersistenceHelper.insertIntoConnectionTable(super.connection,
+					SqlQueries.JOBCVS_CARRERFIELDS_CONNECTION_SQL_QUERY, jobcv_last_insert_id, language_last_insert_id);
+		}
+	}
 }

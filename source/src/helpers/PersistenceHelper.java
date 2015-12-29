@@ -4,22 +4,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public class DatabaseHelper {
-	private static final String INSERT_LOCATION_SQL_QUERY = "INSERT IGNORE INTO " + "locations(city,country) "
-			+ "VALUES(?,?)";
-	private static final String INSERT_USERTYPE_SQL_QUERY = "INSERT IGNORE INTO " + "usertypes(usertype) "
-			+ "VALUES(?)";
-	private static final String INSERT_EDUCATION_SQL_QUERY = "INSERT IGNORE INTO " + "educations(education) "
-			+ "VALUES(?)";
-	private static final String INSERT_WORKPOSITION_SQL_QUERY = "INSERT IGNORE INTO " + "workpositions(workposition) "
-			+ "VALUES(?)";
-	private static final String INSERT_WORKTYPE_SQL_QUERY = "INSERT IGNORE INTO " + "worktypes(worktype) "
-			+ "VALUES(?)";
-	private static final String INSERT_CARRERFIELD_SQL_QUERY = "INSERT IGNORE INTO " + "carrerfields(carrerfield) "
-			+ "VALUES(?)";
-	private static final String INSERT_LANGUAGE_SQL_QUERY = "INSERT IGNORE INTO " + "languages(language) "
-			+ "VALUES(?)";
+public class PersistenceHelper {
+	private static final String INSERT_LOCATION_SQL_QUERY = "INSERT INTO " + "locations(city,country) " + "VALUES(?,?) "
+			+ "ON DUPLICATE KEY UPDATE city=city,country=country;";
+	private static final String INSERT_USERTYPE_SQL_QUERY = "INSERT INTO " + "usertypes(usertype) " + "VALUES(?) "
+			+ "ON DUPLICATE KEY UPDATE usertype=usertype;";
+	private static final String INSERT_EDUCATION_SQL_QUERY = "INSERT INTO " + "educations(education) " + "VALUES(?) "
+			+ "ON DUPLICATE KEY UPDATE education=education;";
+	private static final String INSERT_WORKPOSITION_SQL_QUERY = "INSERT INTO " + "workpositions(workposition) "
+			+ "VALUES(?) " + "ON DUPLICATE KEY UPDATE workposition=workposition;";
+	private static final String INSERT_WORKTYPE_SQL_QUERY = "INSERT INTO " + "worktypes(worktype) " + "VALUES(?) "
+			+ "ON DUPLICATE KEY UPDATE worktype=worktype;";
+	private static final String INSERT_CARRERFIELD_SQL_QUERY = "INSERT INTO " + "carrerfields(carrerfield) "
+			+ "VALUES(?) " + "ON DUPLICATE KEY UPDATE carrerfield=carrerfield;";
+	private static final String INSERT_LANGUAGE_SQL_QUERY = "INSERT INTO " + "languages(language) " + "VALUES(?) "
+			+ "ON DUPLICATE KEY UPDATE language=language;";
 
 	public static void insertLocationIntoDatabase(Connection connection, String city, String country)
 			throws SQLException {
@@ -64,12 +66,27 @@ public class DatabaseHelper {
 		preparedStatement.setString(1, language);
 		preparedStatement.executeUpdate();
 	}
-	
-	public static void insertIntoConnectionTable(Connection connection, String tableName, int firstId, int secondId) throws SQLException {
-//		String insertConnectionSqlQuery = "INSERT INTO " + tableName + "()";
-//		PreparedStatement preparedStatement = connection.prepareStatement(INSERT_LANGUAGE_SQL_QUERY);
-//		preparedStatement.setString(1, language);
-//		preparedStatement.executeUpdate();
+
+	public static void insertIntoConnectionTable(Connection connection, String connectionSqlQuery, int firstId,
+			int secondId) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(connectionSqlQuery);
+		preparedStatement.setInt(1, firstId);
+		preparedStatement.setInt(2, secondId);
+		preparedStatement.executeUpdate();
+	}
+
+	public static Collection<String> retrieveDataFromConnectionTable(Connection connection, String sqlQuery,
+			String tableFieldName, int id) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+		preparedStatement.setInt(1, id);
+		ResultSet resultSet = preparedStatement.executeQuery();
+		Collection<String> queryResult = new ArrayList<String>();
+		while (resultSet.next()) {
+			String data = resultSet.getString(tableFieldName);
+			queryResult.add(data);
+		}
+
+		return queryResult;
 	}
 
 	public static int getLastInsertedId(Connection connection) throws SQLException {

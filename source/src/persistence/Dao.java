@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
+import persistence.sources.DataSource;
+
 public abstract class Dao {
 	protected DataSource dataSource;
 	protected Connection connection;

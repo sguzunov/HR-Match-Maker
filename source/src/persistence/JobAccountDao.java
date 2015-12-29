@@ -1,5 +1,7 @@
 package persistence;
 
+import persistence.sources.DataSource;
+
 public abstract class JobAccountDao extends Dao {
 
 	public JobAccountDao(DataSource dataSource) {

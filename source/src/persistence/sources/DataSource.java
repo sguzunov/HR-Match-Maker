@@ -1,4 +1,4 @@
-package persistence;
+package persistence.sources;
 
 import java.sql.Connection;
 import java.sql.SQLException;

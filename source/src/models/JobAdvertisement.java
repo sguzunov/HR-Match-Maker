@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Collection;
 import java.util.List;
 
 import enums.CarrerField;
@@ -8,23 +9,17 @@ import enums.WorkPosition;
 import enums.WorkType;
 
 public class JobAdvertisement extends JobAccount {
-	private static long id;
 	private String title;
 	private String resume;
 
-	public JobAdvertisement(User createBy, Location location, Education requiredEducation, WorkPosition workPosition,
-			WorkType workType, Boolean requiredExperience, String title, String resume,
-			List<CarrerField> carrerFields) {
-		super(createBy, location, requiredEducation, workPosition, workType, requiredExperience, carrerFields);
+	public JobAdvertisement(int id, User createBy, Location location, Education requiredEducation,
+			WorkPosition workPosition, WorkType workType, Boolean requiredExperience, String title, String resume,
+			Collection<CarrerField> carrerFields) {
+		super(id, createBy, location, requiredEducation, workPosition, workType, requiredExperience, carrerFields);
 		this.setTitle(title);
 		this.setResume(resume);
-		JobAdvertisement.id++;
 	}
 
-	public long getId(){
-		return JobAdvertisement.id;
-	}
-	
 	public String getTitle() {
 		return title;
 	}
