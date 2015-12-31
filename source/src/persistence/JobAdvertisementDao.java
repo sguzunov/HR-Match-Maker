@@ -19,6 +19,10 @@ import models.User;
 import persistence.sources.DataSource;
 
 public class JobAdvertisementDao extends JobAccountDao {
+	private static final String JOBADVERTISEMENT_ID_COLUMN = "jobadvertisement_id";
+	private static final String TITLE_COLUMN = "title";
+	private static final String RESUME_COLUMN = "resume";
+
 	public JobAdvertisementDao(DataSource dataSource) {
 		super(dataSource);
 	}
@@ -33,16 +37,16 @@ public class JobAdvertisementDao extends JobAccountDao {
 			super.preparedStatement.setInt(1, id);
 			super.resultSet = super.preparedStatement.executeQuery();
 			while (super.resultSet.next()) {
-				String userName = super.resultSet.getString("username");
-				String userTypeAsString = super.resultSet.getString("usertype");
-				String city = super.resultSet.getString("city");
-				String country = super.resultSet.getString("country");
-				String educationAsString = super.resultSet.getString("education");
-				String workPositionAsString = super.resultSet.getString("workposition");
-				String worktypeAsString = super.resultSet.getString("worktype");
-				boolean requiredExperience = super.resultSet.getBoolean("requiredexperience");
-				String title = super.resultSet.getString("title");
-				String resume = super.resultSet.getString("resume");
+				String userName = super.resultSet.getString(USERNAME_COLUMN);
+				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
+				String city = super.resultSet.getString(CITY_COLUMN);
+				String country = super.resultSet.getString(COUNTRY_COLUMN);
+				String educationAsString = super.resultSet.getString(EDUCATION_COLUMN);
+				String workPositionAsString = super.resultSet.getString(WORKPOSITION_COLUMN);
+				String worktypeAsString = super.resultSet.getString(WORKTYPE_COLUMN);
+				boolean requiredExperience = super.resultSet.getBoolean(REQUIREDEXPERIENCE_COLUMN);
+				String title = super.resultSet.getString(TITLE_COLUMN);
+				String resume = super.resultSet.getString(RESUME_COLUMN);
 
 				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
 				Education requiredEducation = EnumUtils.ConvertStringToEnumValue(educationAsString, Education.class);
@@ -140,17 +144,17 @@ public class JobAdvertisementDao extends JobAccountDao {
 			super.resultSet = super.preparedStatement.executeQuery();
 			queryReult = new ArrayList<E>();
 			while (super.resultSet.next()) {
-				int jobAdId = super.resultSet.getInt("jobadvertisement_id");
-				String userName = super.resultSet.getString("username");
-				String userTypeAsString = super.resultSet.getString("usertype");
-				String city = super.resultSet.getString("city");
-				String country = super.resultSet.getString("country");
-				String educationAsString = super.resultSet.getString("education");
-				String workPositionAsString = super.resultSet.getString("workposition");
-				String worktypeAsString = super.resultSet.getString("worktype");
-				boolean requiredExperience = super.resultSet.getBoolean("requiredexperience");
-				String title = super.resultSet.getString("title");
-				String resume = super.resultSet.getString("resume");
+				int jobAdId = super.resultSet.getInt(JOBADVERTISEMENT_ID_COLUMN);
+				String userName = super.resultSet.getString(USERNAME_COLUMN);
+				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
+				String city = super.resultSet.getString(CITY_COLUMN);
+				String country = super.resultSet.getString(COUNTRY_COLUMN);
+				String educationAsString = super.resultSet.getString(EDUCATION_COLUMN);
+				String workPositionAsString = super.resultSet.getString(WORKPOSITION_COLUMN);
+				String worktypeAsString = super.resultSet.getString(WORKTYPE_COLUMN);
+				boolean requiredExperience = super.resultSet.getBoolean(REQUIREDEXPERIENCE_COLUMN);
+				String title = super.resultSet.getString(TITLE_COLUMN);
+				String resume = super.resultSet.getString(RESUME_COLUMN);
 
 				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
 				Education requiredEducation = EnumUtils.ConvertStringToEnumValue(educationAsString, Education.class);

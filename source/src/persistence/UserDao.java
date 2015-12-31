@@ -13,6 +13,9 @@ import models.User;
 import persistence.sources.DataSource;
 
 public class UserDao extends Dao {
+	private static final String USERNAME_COLUMN = "username";
+	private static final String USERTYPE_COLUMN = "usertype";
+
 	public UserDao(DataSource dataSource) {
 		super(dataSource);
 	}
@@ -58,8 +61,8 @@ public class UserDao extends Dao {
 			super.resultSet = super.preparedStatement.executeQuery();
 			queryReult = new ArrayList<E>();
 			while (super.resultSet.next()) {
-				String userName = super.resultSet.getString("username");
-				String userTypeAsString = super.resultSet.getString("usertype");
+				String userName = super.resultSet.getString(USERNAME_COLUMN);
+				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 
 				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
 				User user = new User(userName, userType);

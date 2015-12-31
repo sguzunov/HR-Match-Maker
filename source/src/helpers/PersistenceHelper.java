@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.glassfish.jersey.internal.util.collection.StringIgnoreCaseKeyComparator;
-
 import common.EnumUtils;
 import common.SqlQueries;
 import enums.CarrerField;
@@ -108,7 +106,7 @@ public class PersistenceHelper {
 		return carrerFields;
 	}
 
-	// Get all languages correspondenting from attribute table 'languages'.
+	// Get all languages which correspondent from attribute table 'languages'.
 	public static Collection<String> retrieveAllLanguages(Connection connection, String sqlQuery, int id)
 			throws SQLException {
 		Collection<String> languages = PersistenceHelper.retrieveDataFromConnectionTable(connection, sqlQuery,

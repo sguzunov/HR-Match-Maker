@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.persistence.Persistence;
-
 import common.EnumUtils;
 import common.SqlQueries;
 import enums.CarrerField;
@@ -21,6 +19,9 @@ import models.User;
 import persistence.sources.DataSource;
 
 public class JobCvDao extends JobAccountDao {
+	private static final String JOBCV_ID_COLUMN = "jobcv_id";
+	private static final String AGE_COLUMN = "age";
+
 	public JobCvDao(DataSource dataSource) {
 		super(dataSource);
 	}
@@ -35,15 +36,15 @@ public class JobCvDao extends JobAccountDao {
 			super.preparedStatement.setInt(1, id);
 			super.resultSet = super.preparedStatement.executeQuery();
 			while (super.resultSet.next()) {
-				String userName = super.resultSet.getString("username");
-				String userTypeAsString = super.resultSet.getString("usertype");
-				String city = super.resultSet.getString("city");
-				String country = super.resultSet.getString("country");
-				String educationAsString = super.resultSet.getString("education");
-				String workPositionAsString = super.resultSet.getString("workposition");
-				String worktypeAsString = super.resultSet.getString("worktype");
-				boolean requiredExperience = super.resultSet.getBoolean("requiredexperience");
-				int age = super.resultSet.getInt("age");
+				String userName = super.resultSet.getString(USERNAME_COLUMN);
+				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
+				String city = super.resultSet.getString(CITY_COLUMN);
+				String country = super.resultSet.getString(COUNTRY_COLUMN);
+				String educationAsString = super.resultSet.getString(EDUCATION_COLUMN);
+				String workPositionAsString = super.resultSet.getString(WORKPOSITION_COLUMN);
+				String worktypeAsString = super.resultSet.getString(WORKTYPE_COLUMN);
+				boolean requiredExperience = super.resultSet.getBoolean(REQUIREDEXPERIENCE_COLUMN);
+				int age = super.resultSet.getInt(AGE_COLUMN);
 
 				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
 				Education requiredEducation = EnumUtils.ConvertStringToEnumValue(educationAsString, Education.class);
@@ -143,16 +144,16 @@ public class JobCvDao extends JobAccountDao {
 			super.resultSet = super.preparedStatement.executeQuery();
 			queryReult = new ArrayList<E>();
 			while (super.resultSet.next()) {
-				int jobCvId = super.resultSet.getInt("jobcv_id");
-				String userName = super.resultSet.getString("username");
-				String userTypeAsString = super.resultSet.getString("usertype");
-				String city = super.resultSet.getString("city");
-				String country = super.resultSet.getString("country");
-				String educationAsString = super.resultSet.getString("education");
-				String workPositionAsString = super.resultSet.getString("workposition");
-				String worktypeAsString = super.resultSet.getString("worktype");
-				boolean requiredExperience = super.resultSet.getBoolean("requiredexperience");
-				int age = super.resultSet.getInt("age");
+				int jobCvId = super.resultSet.getInt(JOBCV_ID_COLUMN);
+				String userName = super.resultSet.getString(USERNAME_COLUMN);
+				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
+				String city = super.resultSet.getString(CITY_COLUMN);
+				String country = super.resultSet.getString(COUNTRY_COLUMN);
+				String educationAsString = super.resultSet.getString(EDUCATION_COLUMN);
+				String workPositionAsString = super.resultSet.getString(WORKPOSITION_COLUMN);
+				String worktypeAsString = super.resultSet.getString(WORKTYPE_COLUMN);
+				boolean requiredExperience = super.resultSet.getBoolean(REQUIREDEXPERIENCE_COLUMN);
+				int age = super.resultSet.getInt(AGE_COLUMN);
 
 				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
 				Education requiredEducation = EnumUtils.ConvertStringToEnumValue(educationAsString, Education.class);
