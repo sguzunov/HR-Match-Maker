@@ -20,7 +20,6 @@ import persistence.sources.DataSource;
 
 public class JobCvDao extends JobAccountDao {
 	private static final String JOBCV_ID_COLUMN = "jobcv_id";
-	private static final String AGE_COLUMN = "age";
 
 	public JobCvDao(DataSource dataSource) {
 		super(dataSource);
@@ -51,6 +50,7 @@ public class JobCvDao extends JobAccountDao {
 				WorkPosition workPosition = EnumUtils.ConvertStringToEnumValue(workPositionAsString,
 						WorkPosition.class);
 				WorkType workType = EnumUtils.ConvertStringToEnumValue(worktypeAsString, WorkType.class);
+
 				User user = new User(userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
@@ -226,6 +226,5 @@ public class JobCvDao extends JobAccountDao {
 				super.closePreparedStatement();
 			}
 		}
-
 	}
 }

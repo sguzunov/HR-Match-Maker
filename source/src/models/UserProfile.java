@@ -1,16 +1,32 @@
 package models;
 
 public abstract class UserProfile {
+	private int id;
+	private User user;
 	private String firstName;
 	private String lastName;
 	private Location location;
 	private String webSite;
 
-	public UserProfile(String firstName, String lastName, Location location, String webSite) {
+	public UserProfile(int id, User user,String firstName, String lastName, Location location, String webSite) {
+		this.id = id;
+		this.setUser(user);
 		this.setFirstName(firstName);
 		this.setLastName(lastName);
 		this.setLocation(location);
 		this.setWebSite(webSite);
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public User getUser() {
+		return this.user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public String getFirstName() {
