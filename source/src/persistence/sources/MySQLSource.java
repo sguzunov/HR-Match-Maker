@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class MySQLSource implements DataSource {
 	private static final String DB_DRIVER_NAME = "com.mysql.jdbc.Driver";
-	private static final String DB_URL = "jdbc:mysql://localhost:3306/ hrmatchmakerdb";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/hrmatchmakerdb";
 	private static final String DB_USER = "owner";
 	private static final String DB_PASSWORD = "ownerpw";
 
