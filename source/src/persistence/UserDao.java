@@ -10,14 +10,21 @@ import common.SqlQueries;
 import enums.UserType;
 import helpers.PersistenceHelper;
 import models.User;
+import persistence.contracts.UserPersistence;
 import persistence.sources.DataSource;
 
-public class UserDao extends Dao {
+public class UserDao extends Dao implements UserPersistence {
 	private static final String USERNAME_COLUMN = "username";
 	private static final String USERTYPE_COLUMN = "usertype";
 
 	public UserDao(DataSource dataSource) {
 		super(dataSource);
+	}
+
+	@Override
+	public <E> E selectBy(String identifier) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -88,29 +95,29 @@ public class UserDao extends Dao {
 		return queryReult;
 	}
 
-	@Override
-	public <E> void update(E data) {
-		User user = (User) data;
-		try {
-			super.openConnection();
-			super.defineStatement(SqlQueries.UPDATE_USER_PASSWORD_SQL_QUERY);
-
-			super.preparedStatement.setString(1, user.getPassword());
-			super.preparedStatement.setString(2, user.getUserName());
-			super.preparedStatement.executeUpdate();
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (super.connection != null) {
-				super.closeConnection();
-			}
-			if (super.preparedStatement != null) {
-				super.closePreparedStatement();
-			}
-		}
-	}
+	// @Override
+	// public <E> void update(E data) {
+	// User user = (User) data;
+	// try {
+	// super.openConnection();
+	// super.defineStatement(SqlQueries.UPDATE_USER_PASSWORD_SQL_QUERY);
+	//
+	// super.preparedStatement.setString(1, user.getPassword());
+	// super.preparedStatement.setString(2, user.getUserName());
+	// super.preparedStatement.executeUpdate();
+	//
+	// } catch (ClassNotFoundException e) {
+	// e.printStackTrace();
+	// } catch (SQLException e) {
+	// e.printStackTrace();
+	// } finally {
+	// if (super.connection != null) {
+	// super.closeConnection();
+	// }
+	// if (super.preparedStatement != null) {
+	// super.closePreparedStatement();
+	// }
+	// }
+	// }
 
 }

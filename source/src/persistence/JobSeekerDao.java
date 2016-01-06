@@ -16,9 +16,13 @@ import models.JobCV;
 import models.JobSeekerProfile;
 import models.Location;
 import models.User;
+import persistence.contracts.UserProfilePersistence;
 import persistence.sources.DataSource;
 
-public class JobSeekerDao extends UserProfileDao {
+public class JobSeekerDao extends Dao implements UserProfilePersistence {
+	private final static String FIRSTNAME_COLUMN = "firstname";
+	private final static String LASTNAME_COLUMN = "lastname";
+	private final static String WEBSITE_COLUMN = "website";
 	private static final String PROFILE_ID_COLUMN = "profile_id";
 
 	public JobSeekerDao(DataSource dataSource) {
@@ -26,13 +30,13 @@ public class JobSeekerDao extends UserProfileDao {
 	}
 
 	@Override
-	public <E> E getByName(String name) {
+	public <E> E selectBy(String identifier) {
 		JobSeekerProfile jobSeekerProfile = null;
 		try {
 			super.openConnection();
 			super.defineStatement(SqlQueries.RETRIEVE_JOBSEEKERPROFILE_BY_NAME_SQL_QUERY);
 
-			super.preparedStatement.setString(1, name);
+			super.preparedStatement.setString(1, identifier);
 			super.resultSet = super.preparedStatement.executeQuery();
 
 			int id = super.resultSet.getInt(PROFILE_ID_COLUMN);

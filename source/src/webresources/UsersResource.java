@@ -1,28 +1,33 @@
 package webresources;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
-import enums.UserType;
-import models.User;
-import parsers.contracts.ModelParser;
 
 @Path("/users")
 public class UsersResource {
 
-	@GET
+	@POST
 	@Produces("application/json")
-	public String getJSON() {
+	public Response createUser(@Context HttpServletRequest request) {
 		return null;
 	}
 
-	@POST
+	@PUT
 	@Produces("application/json")
-	public Response createUser(String representation) {
+	public Response logInUser(@Context HttpServletRequest request) {
+		return null;
+	}
+
+	@DELETE
+	public Response logOutUser(@Context HttpServletRequest request) {
 		return null;
 	}
 }

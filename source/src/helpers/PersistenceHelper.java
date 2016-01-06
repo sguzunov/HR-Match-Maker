@@ -145,4 +145,8 @@ public class PersistenceHelper {
 			PersistenceHelper.insertIntoConnectionTable(connection, sqlQuery, id, languageLastInsertId);
 		}
 	}
+
+	public static void checkIfDataAlreadyExists(String data) {
+
+	}
 }

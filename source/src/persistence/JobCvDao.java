@@ -16,9 +16,13 @@ import helpers.PersistenceHelper;
 import models.JobCV;
 import models.Location;
 import models.User;
+import persistence.contracts.JobAccountPersistence;
 import persistence.sources.DataSource;
 
-public class JobCvDao extends JobAccountDao {
+public class JobCvDao extends Dao implements JobAccountPersistence {
+	protected static final String WORKPOSITION_COLUMN = "workposition";
+	protected static final String WORKTYPE_COLUMN = "worktype";
+	protected static final String REQUIREDEXPERIENCE_COLUMN = "requiredexperience";
 	private static final String JOBCV_ID_COLUMN = "jobcv_id";
 
 	public JobCvDao(DataSource dataSource) {
@@ -26,8 +30,9 @@ public class JobCvDao extends JobAccountDao {
 	}
 
 	@Override
-	public <E> E getById(int id) {
+	public <E> E selectBy(String identifier) {
 		JobCV jobCV = null;
+		int id = Integer.parseInt(identifier);
 		try {
 			super.openConnection();
 			super.defineStatement(SqlQueries.RETRIEVE_JOBCV_BY_ID_SQL_QUERY);

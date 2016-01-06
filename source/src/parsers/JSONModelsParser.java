@@ -1,17 +1,20 @@
 package parsers;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import parsers.contracts.ModelParser;
+import parsers.contracts.ModelsParser;
 
-public class JSONObjectParser implements ModelParser {
+public class JSONModelsParser implements ModelsParser {
+	private static final String JSON_ARRAY_NAME = "result";
+
 	private ObjectMapper mapper;
 
-	public JSONObjectParser() {
+	public JSONModelsParser() {
 		this.mapper = new ObjectMapper();
 
 		// All null values will be missed from the json string representation.
@@ -31,15 +34,28 @@ public class JSONObjectParser implements ModelParser {
 	}
 
 	@Override
-	public <E> E parseStringToModel(String modelAsString, E type) {
+	public <E> E parseStringToModel(String modelAsString, Class<E> type) {
 		E objectFromJsonString = null;
 		try {
-			objectFromJsonString = (E) mapper.readValue(modelAsString, type.getClass());
+			objectFromJsonString = (E) mapper.readValue(modelAsString, type);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		return objectFromJsonString;
+	}
+
+	public <E> String parseCollectionToString(Collection<E> models) {
+		String result = "{" + JSON_ARRAY_NAME + "{";
+		for (E model : models) {
+			result += this.parseModelToString(model);
+			result += ",";
+		}
+
+		result = result.substring(0, result.length() - 1);
+		result += "}]";
+
+		return result;
 	}
 
 }

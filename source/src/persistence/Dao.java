@@ -25,12 +25,6 @@ public abstract class Dao {
 		this.dataSource = dataSource;
 	}
 
-	public abstract <E> void create(final E data);
-
-	public abstract <E> Collection<E> retrieve() throws ClassNotFoundException, SQLException;
-
-	public abstract <E> void update(final E data);
-
 	protected void openConnection() throws ClassNotFoundException, SQLException {
 		this.connection = this.dataSource.getConnection();
 	}
