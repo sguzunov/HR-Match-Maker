@@ -4,8 +4,8 @@ import java.util.UUID;
 
 public class RandomProvider {
 
-	public static String generaterandomUUID(String data) {
-		UUID uuid = UUID.fromString(data);
+	public static String generaterandomUUIDFromString() {
+		UUID uuid = UUID.randomUUID();
 
 		return uuid.toString();
 	}

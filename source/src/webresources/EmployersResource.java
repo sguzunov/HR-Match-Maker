@@ -8,7 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Path("/profiles")
-public class ProfilesResource {
+public class EmployersResource {
 
 	@GET
 	@Produces("application/json")
@@ -18,7 +18,6 @@ public class ProfilesResource {
 
 	@POST
 	@Consumes("application/json")
-	@Produces("application/json")
 	public Response createProfile(String representation) {
 		return null;
 	}

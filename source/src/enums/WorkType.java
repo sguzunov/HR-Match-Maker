@@ -1,8 +1,5 @@
 package enums;
 
 public enum WorkType {
-	FULLTIME,
-	PARTTIME,
-	DISTANCE,
-	STUDENT
+	FULLTIME, PARTTIME, DISTANCE, STUDENT,
 }

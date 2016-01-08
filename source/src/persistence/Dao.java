@@ -1,10 +1,10 @@
 package persistence;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 
 import persistence.sources.DataSource;
 
@@ -16,10 +16,10 @@ public abstract class Dao {
 	protected static final String EDUCATION_COLUMN = "education";
 	protected static final String AGE_COLUMN = "age";
 
-	protected DataSource dataSource;
 	protected Connection connection;
 	protected PreparedStatement preparedStatement;
 	protected ResultSet resultSet;
+	protected DataSource dataSource;
 
 	public Dao(DataSource dataSource) {
 		this.dataSource = dataSource;

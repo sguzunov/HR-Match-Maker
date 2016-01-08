@@ -8,15 +8,19 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-@Path("/profiles/{profileid}")
-public class ProfileResource {
+import common.security.Secured;
 
+@Path("/profiles/my-profile")
+public class EmployerResource {
+
+	@Secured
 	@GET
 	@Produces("application/json")
 	public Response getJSON(@PathParam("profileid") String profileid) {
-		return null;
+		return Response.ok().entity("{\"luck\":\"yes\"}").build();
 	}
 
+	@Secured
 	@PUT
 	@Consumes("application/json")
 	@Produces("application/json")

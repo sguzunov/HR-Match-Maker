@@ -15,16 +15,11 @@ import persistence.sources.DataSource;
 
 public class UserDao extends Dao implements UserPersistence {
 	private static final String USERNAME_COLUMN = "username";
+	private static final String PASSWORD_COLUMN = "password";
 	private static final String USERTYPE_COLUMN = "usertype";
 
 	public UserDao(DataSource dataSource) {
 		super(dataSource);
-	}
-
-	@Override
-	public <E> E selectBy(String identifier) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -59,7 +54,7 @@ public class UserDao extends Dao implements UserPersistence {
 	}
 
 	@Override
-	public <E> Collection<E> retrieve() throws ClassNotFoundException, SQLException {
+	public <E> Collection<E> retrieve() {
 		Collection<E> queryReult = null;
 		try {
 			super.openConnection();
@@ -69,10 +64,11 @@ public class UserDao extends Dao implements UserPersistence {
 			queryReult = new ArrayList<E>();
 			while (super.resultSet.next()) {
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
+				String password = super.resultSet.getString(PASSWORD_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 
 				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
-				User user = new User(userName, userType);
+				User user = new User(userName, password, userType);
 				queryReult.add((E) user);
 			}
 
@@ -94,30 +90,4 @@ public class UserDao extends Dao implements UserPersistence {
 
 		return queryReult;
 	}
-
-	// @Override
-	// public <E> void update(E data) {
-	// User user = (User) data;
-	// try {
-	// super.openConnection();
-	// super.defineStatement(SqlQueries.UPDATE_USER_PASSWORD_SQL_QUERY);
-	//
-	// super.preparedStatement.setString(1, user.getPassword());
-	// super.preparedStatement.setString(2, user.getUserName());
-	// super.preparedStatement.executeUpdate();
-	//
-	// } catch (ClassNotFoundException e) {
-	// e.printStackTrace();
-	// } catch (SQLException e) {
-	// e.printStackTrace();
-	// } finally {
-	// if (super.connection != null) {
-	// super.closeConnection();
-	// }
-	// if (super.preparedStatement != null) {
-	// super.closePreparedStatement();
-	// }
-	// }
-	// }
-
 }

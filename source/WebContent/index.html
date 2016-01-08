@@ -7,19 +7,21 @@
 <body>
 	<script type="text/javascript"
 		src="https://code.jquery.com/jquery-2.1.4.js"></script>
-		
-		<script>
-			$.ajax({
-				url : "localhost:8080/HRMatchMaker/api/users",
-				contentType: "application/json",
-				success : function(result) {
-					console.log(result);
-				},
-				error : function(data) {
-					console.log(data);
-				}
-			});
-		</script>
+
+	<script>
+		$.ajax({
+			url : "http://localhost:8080/HRMatchMaker/api/profiles/my-profile",
+			contentType : "application/json",
+			success : function(result) {
+				console.log('Yes');
+				console.log(result.luck);
+			},
+			error : function(data) {
+				console.log('No');
+				console.log(data);
+			}
+		});
+	</script>
 
 </body>
 </html>

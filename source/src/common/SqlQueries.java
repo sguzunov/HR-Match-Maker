@@ -28,7 +28,7 @@ public class SqlQueries {
 	public static final String CREATE_USER_SQL_QUERY = "INSERT INTO Users" + "(username,password,fk_usertype_id) "
 			+ "VALUES(?,?,(SELECT usertype_id FROM usertypes WHERE usertype=?));";
 
-	public static final String RETRIEVE_ALL_USERS_SQL_QUERY = "SELECT username,usertype " + "FROM users "
+	public static final String RETRIEVE_ALL_USERS_SQL_QUERY = "SELECT username,password,usertype " + "FROM users "
 			+ "INNER JOIN usertypes ON " + "users.fk_usertype_id=usertype_id;";
 
 	public static final String UPDATE_USER_PASSWORD_SQL_QUERY = "UPDATE users " + "SET password=? "

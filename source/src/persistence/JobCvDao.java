@@ -140,7 +140,7 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 	}
 
 	@Override
-	public <E> Collection<E> retrieve() throws ClassNotFoundException, SQLException {
+	public <E> Collection<E> retrieve() {
 		Collection<E> queryReult = null;
 		try {
 			super.openConnection();
