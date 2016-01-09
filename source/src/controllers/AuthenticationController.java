@@ -15,6 +15,7 @@ import exceptions.InvalidUserException;
 import http.HttpRequest;
 import http.HttpResponseProvider;
 import http.ResponseProviderFactory;
+import models.Credentials;
 import models.User;
 import persistence.contracts.UserPersistence;
 import transformers.contracts.ModelsTransformer;
@@ -24,10 +25,11 @@ public class AuthenticationController implements PutController, DeleteController
 	private static final int USERNAME_MIN_LENGTH = 6;
 	private static final int PASSWORD_MIN_LENGTH = 10;
 
+	public static Map<String, String> tokens = new HashMap<String, String>();
+
 	private UserPersistence persistence;
 	private ModelsTransformer modelsTransformer;
 	private ResponseProviderFactory responseProviderFactory;
-	public static Map<String, String> tokens = new HashMap<String, String>();
 
 	public AuthenticationController(UserPersistence persistence, ModelsTransformer modelsTransformer,
 			ResponseProviderFactory responseProviderFactory) {
@@ -51,11 +53,11 @@ public class AuthenticationController implements PutController, DeleteController
 			String authToken = this.issueToken();
 			tokens.put(username, authToken);
 
-			User authenticatedUser = new User(username, authToken);
-			String authenticatedUserAsJsonString = this.modelsTransformer.transformModelToString(authenticatedUser);
+			Credentials userCredentials = new Credentials(username, authToken);
+			String userCredentialsAsString = this.modelsTransformer.transformModelToString(userCredentials);
 
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.OK);
-			httpResponseProvider.setResponseBody(authenticatedUserAsJsonString);
+			httpResponseProvider.setResponseBody(userCredentialsAsString);
 		} catch (Exception e) {
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.BADREQUEST);
 			e.printStackTrace();
@@ -68,23 +70,17 @@ public class AuthenticationController implements PutController, DeleteController
 	@Override
 	public Response delete(HttpRequest request) {
 		String modelAsJsonString = request.getBody();
-		User user = this.modelsTransformer.transformStringToModel(modelAsJsonString, User.class);
+		Credentials credentials = this.modelsTransformer.transformStringToModel(modelAsJsonString, Credentials.class);
 
 		HttpResponseProvider httpResponseProvider = null;
 		try {
-			String username = user.getUserName();
-			String authKey = user.getAuthToken();
-
-			System.out.println(username);
-			System.out.println(authKey);
-			System.out.println(tokens.containsKey(username));
-
+			String username = credentials.getUserName();
+			String authKey = credentials.getAuthKey();
 			if (!this.isUserLogged(username, authKey)) {
 				throw new InvalidUserException();
 			}
 
 			tokens.remove(username);
-
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.OK);
 		} catch (Exception e) {
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.BADREQUEST);

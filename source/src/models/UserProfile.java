@@ -8,7 +8,7 @@ public abstract class UserProfile {
 	private Location location;
 	private String webSite;
 
-	public UserProfile(int id, User user,String firstName, String lastName, Location location, String webSite) {
+	public UserProfile(int id, User user, String firstName, String lastName, Location location, String webSite) {
 		this.id = id;
 		this.setUser(user);
 		this.setFirstName(firstName);

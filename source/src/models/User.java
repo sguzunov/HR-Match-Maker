@@ -6,12 +6,6 @@ public class User {
 	private String username;
 	private String password;
 	private UserType userType;
-	private String authToken;
-
-	public User(String username, String authToken) {
-		this.username = username;
-		this.authToken = authToken;
-	}
 
 	public User(String userName, UserType userType) {
 		this.username = userName;
@@ -39,7 +33,4 @@ public class User {
 		return userType;
 	}
 
-	public String getAuthToken() {
-		return authToken;
-	}
 }

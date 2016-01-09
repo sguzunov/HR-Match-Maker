@@ -9,6 +9,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import common.security.Secured;
+import controllers.EmployerProfileController;
+import controllers.ProfilesController;
+import http.ResponseProviderFactory;
+import persistence.EmployerDao;
+import persistence.sources.DataSource;
+import persistence.sources.MySQLSource;
+import transformers.JSONModelsTransformer;
+import transformers.contracts.ModelsTransformer;
 
 @Path("/jobcvs")
 public class JobCVsResource {
@@ -16,7 +24,15 @@ public class JobCVsResource {
 	@GET
 	@Produces("application/json")
 	public Response getJSON() {
-		return null;
+		DataSource dataSource = new MySQLSource();
+		EmployerDao employerDao = new EmployerDao(dataSource);
+		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
+		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		ProfilesController profilesController = new EmployerProfileController(employerDao, modelsTransformer,
+				responseProviderFactory);
+		Response response = profilesController.get();
+
+		return response;
 	}
 
 	@Secured
