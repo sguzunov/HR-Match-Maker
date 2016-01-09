@@ -10,27 +10,27 @@ import javax.ws.rs.core.Response;
 
 import common.security.Secured;
 import controllers.EmployerProfileController;
+import controllers.JobSeekerProfileController;
 import controllers.ProfilesController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
-import persistence.EmployerDao;
+import persistence.JobSeekerDao;
 import persistence.sources.DataSource;
 import persistence.sources.MySQLSource;
 import transformers.JSONModelsTransformer;
 import transformers.contracts.ModelsTransformer;
 
-@Path("/profiles/employers")
-public class EmployersResource {
+@Path("/profiles/jobseekers")
+public class JobSeekersResource {
 
-	@Secured
 	@GET
 	@Produces("application/json")
 	public Response getJSON() {
 		DataSource dataSource = new MySQLSource();
-		EmployerDao employerDao = new EmployerDao(dataSource);
+		JobSeekerDao jobSeekersDao = new JobSeekerDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
-		ProfilesController profilesController = new EmployerProfileController(employerDao, modelsTransformer,
+		ProfilesController profilesController = new JobSeekerProfileController(jobSeekersDao, modelsTransformer,
 				responseProviderFactory);
 		Response response = profilesController.get();
 
@@ -42,10 +42,10 @@ public class EmployersResource {
 	@Produces("application/json")
 	public Response create(@Context HttpServletRequest request) {
 		DataSource dataSource = new MySQLSource();
-		EmployerDao employerDao = new EmployerDao(dataSource);
+		JobSeekerDao jobSeekerDao = new JobSeekerDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
-		ProfilesController profilesController = new EmployerProfileController(employerDao, modelsTransformer,
+		ProfilesController profilesController = new EmployerProfileController(jobSeekerDao, modelsTransformer,
 				responseProviderFactory);
 		HttpRequest httpRequest = new HttpRequest(request);
 

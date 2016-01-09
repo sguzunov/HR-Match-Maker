@@ -17,6 +17,10 @@ public class HttpRequest {
 		this.body = this.requestParser.getBody(this.servletRequest);
 	}
 
+	public HttpRequest(HttpServletRequest servletRequest) {
+		this(servletRequest, new RequestParser());
+	}
+
 	public String getHeaderValueByKey(String key) {
 		String headerValue = this.headers.get(key);
 

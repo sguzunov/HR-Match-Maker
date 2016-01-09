@@ -16,8 +16,8 @@ import http.HttpRequest;
 import http.HttpResponseProvider;
 import http.ResponseProviderFactory;
 import models.User;
-import parsers.contracts.ModelsTransformer;
 import persistence.contracts.UserPersistence;
+import transformers.contracts.ModelsTransformer;
 
 @Path("/users/auth")
 public class AuthenticationController implements PutController, DeleteController {

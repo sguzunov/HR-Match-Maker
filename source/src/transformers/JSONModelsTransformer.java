@@ -1,11 +1,11 @@
-package parsers;
+package transformers;
 
 import java.util.Collection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import parsers.contracts.ModelsTransformer;
+import transformers.contracts.ModelsTransformer;
 
 public class JSONModelsTransformer implements ModelsTransformer {
 	private static final String JSON_ARRAY_OPEN_STRING = "{[";

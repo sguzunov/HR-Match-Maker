@@ -127,6 +127,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 
 			super.resultSet = super.preparedStatement.executeQuery();
 			queryReult = new ArrayList<E>();
+
 			while (super.resultSet.next()) {
 				int id = super.resultSet.getInt(PROFILE_ID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
@@ -142,8 +143,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 				User user = new User(userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
-						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILES_SQL_QUERY, id);
-
+						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILES_ID_SQL_QUERY, id);
 				EmployerProfile employerProfile = new EmployerProfile(id, user, firstName, lastName, location, webSite,
 						companyName, carrerFields);
 

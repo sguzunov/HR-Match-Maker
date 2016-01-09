@@ -12,25 +12,24 @@ import javax.ws.rs.core.Response;
 import controllers.AuthenticationController;
 import controllers.UsersController;
 import http.HttpRequest;
-import http.RequestParser;
 import http.ResponseProviderFactory;
-import parsers.JSONModelsTransformer;
-import parsers.contracts.ModelsTransformer;
 import persistence.UserDao;
 import persistence.sources.DataSource;
 import persistence.sources.MySQLSource;
+import transformers.JSONModelsTransformer;
+import transformers.contracts.ModelsTransformer;
 
 @Path("/users")
 public class UsersResource {
 
 	@POST
 	@Produces("application/json")
-	public Response createUser(@Context HttpServletRequest request) {
+	public Response create(@Context HttpServletRequest request) {
 		DataSource dataSource = new MySQLSource();
 		UserDao userDao = new UserDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory factory = new ResponseProviderFactory();
-		HttpRequest httpRequest = new HttpRequest(request, new RequestParser());
+		HttpRequest httpRequest = new HttpRequest(request);
 
 		UsersController controller = new UsersController(userDao, modelsTransformer, factory);
 		Response response = controller.post(httpRequest);
@@ -39,13 +38,14 @@ public class UsersResource {
 	}
 
 	@PUT
+	@Path("/auth")
 	@Produces("application/json")
 	public Response authenticateUser(@Context HttpServletRequest request) {
 		DataSource dataSource = new MySQLSource();
 		UserDao userDao = new UserDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory factory = new ResponseProviderFactory();
-		HttpRequest httpRequest = new HttpRequest(request, new RequestParser());
+		HttpRequest httpRequest = new HttpRequest(request);
 
 		AuthenticationController controller = new AuthenticationController(userDao, modelsTransformer, factory);
 		Response response = controller.put(httpRequest);
@@ -60,7 +60,7 @@ public class UsersResource {
 		UserDao userDao = new UserDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory factory = new ResponseProviderFactory();
-		HttpRequest httpRequest = new HttpRequest(request, new RequestParser());
+		HttpRequest httpRequest = new HttpRequest(request);
 
 		AuthenticationController controller = new AuthenticationController(userDao, modelsTransformer, factory);
 		Response response = controller.delete(httpRequest);

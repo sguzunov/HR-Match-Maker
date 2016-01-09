@@ -133,7 +133,7 @@ public class SqlQueries {
 
 	public static final String RETRIEVE_ALL_JOBSEEKERPROFILES_SQL_QUERY = "SELECT profile_id,username,usertype,firstname,lastname,city,country,website,age,education "
 			+ "FROM jobseekerprofiles "
-			+ "INNER JOIN users ON users.user_id=jobseekerprofiles.fk_user_id INNER JOIN usertypes ON usertypes.usertype_id=users.fk_userype_id "
+			+ "INNER JOIN users ON users.user_id=jobseekerprofiles.fk_user_id INNER JOIN usertypes ON usertypes.usertype_id=users.fk_usertype_id "
 			+ "INNER JOIN locations ON locations.location_id=jobseekerprofiles.fk_location_id "
 			+ "INNER JOIN educations ON educations.education_id=jobseekerprofiles.fk_education_id;";
 
@@ -158,15 +158,15 @@ public class SqlQueries {
 
 	public static final String RETRIEVE_ALL_EMPLOYERPROFILES_SQL_QUERY = "SELECT profile_id,username,usertype,firstname,lastname,city,country,website,companyname "
 			+ "FROM employerprofiles "
-			+ "INNER JOIN users ON users.user_id=jobseekerprofiles.fk_user_id INNER JOIN usertypes ON usertypes.usertype_id=users.fk_userype_id "
-			+ "INNER JOIN locations ON locations.location_id=jobseekerprofiles.fk_location_id;";
+			+ "INNER JOIN users ON users.user_id=employerprofiles.fk_user_id INNER JOIN usertypes ON usertypes.usertype_id=users.fk_usertype_id "
+			+ "INNER JOIN locations ON locations.location_id=employerprofiles.fk_location_id;";
 
 	public static final String EMPLOYERPROFILES_CARRERFIELDS_CONNECTION_SQL_QUERY = "INSERT INTO employerprofiles_carrerfields(fk_employerprofile_id,fk_carrerfield_id) "
 			+ "VALUES(?,?);";
 
-	public static final String RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILES_SQL_QUERY = "SELECT carrerfield FROM carrerfields "
+	public static final String RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILES_ID_SQL_QUERY = "SELECT carrerfield FROM carrerfields "
 			+ "INNER JOIN employerprofiles_carrerfields ON carrerfields.carrerfield_id=employerprofiles_carrerfields.fk_carrerfield_id "
-			+ "INNER JOIN employerprofiles ON ?=employerprofiles_carrerfields.fk_employerprofile_id;";
+			+ "INNER JOIN employerprofiles ON ?=employerprofiles_carrerfields.fk_profile_id;";
 
 	public static final String UPDATE_EMPLOYERPROFILE_SQL_QUERY = "UPDATE employerprofiles" + "inner join locations "
 			+ "set " + "employerprofiles.firstname=?," + "employerprofiles.lastname=?,"
@@ -176,6 +176,6 @@ public class SqlQueries {
 	public static final String RETRIEVE_EMPLOYERPROFILE_BY_NAME_SQL_QUERY = "SELECT profile_id,username,usertype,firstname,lastname,city,country,website,companyname "
 			+ "FROM employerprofiles " + "INNER JOIN users ON users.user_id=employerprofiles.fk_user_id "
 			+ "INNER JOIN usertypes ON usertypes.usertype_id=users.fk_userype_id "
-			+ "INNER JOIN locations ON locations.location_id=jobseekersprofiles.fk_location_id "
+			+ "INNER JOIN locations ON locations.location_id=employerprofiles.fk_location_id "
 			+ "WHERE users.username=?;";
 }

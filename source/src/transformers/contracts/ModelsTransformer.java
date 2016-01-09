@@ -1,4 +1,4 @@
-package parsers.contracts;
+package transformers.contracts;
 
 import java.util.Collection;
 

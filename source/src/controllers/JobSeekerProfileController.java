@@ -2,35 +2,28 @@ package controllers;
 
 import javax.ws.rs.core.Response;
 
-import controllers.contracts.PostController;
 import enums.StatusCode;
 import http.HttpRequest;
 import http.HttpResponseProvider;
 import http.ResponseProviderFactory;
-import models.User;
-import persistence.contracts.UserPersistence;
+import models.JobSeekerProfile;
+import persistence.contracts.UserProfilePersistence;
 import transformers.contracts.ModelsTransformer;
 
-public class UsersController implements PostController {
-	private UserPersistence persistence;
-	private ModelsTransformer modelsTransformer;
-	private ResponseProviderFactory responseProviderFactory;
-
-	public UsersController(UserPersistence persistence, ModelsTransformer modelsTransformer,
+public class JobSeekerProfileController extends ProfilesController {
+	public JobSeekerProfileController(UserProfilePersistence persistence, ModelsTransformer modelsTransformer,
 			ResponseProviderFactory responseProviderFactory) {
-		this.persistence = persistence;
-		this.modelsTransformer = modelsTransformer;
-		this.responseProviderFactory = responseProviderFactory;
+		super(persistence, modelsTransformer, responseProviderFactory);
 	}
 
-	// User registration.
 	@Override
 	public Response post(HttpRequest request) {
 		String modelAsJsonString = request.getBody();
 		HttpResponseProvider httpResponseProvider = null;
 		try {
-			User user = this.modelsTransformer.transformStringToModel(modelAsJsonString, User.class);
-			this.persistence.create(user);
+			JobSeekerProfile jobSeekerProfile = this.modelsTransformer.transformStringToModel(modelAsJsonString,
+					JobSeekerProfile.class);
+			this.persistence.create(jobSeekerProfile);
 
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.OK);
 		} catch (Exception e) {
