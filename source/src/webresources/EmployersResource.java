@@ -19,10 +19,9 @@ import persistence.sources.MySQLSource;
 import transformers.JSONModelsTransformer;
 import transformers.contracts.ModelsTransformer;
 
-@Path("/profiles/employers")
+@Path("/employers")
 public class EmployersResource {
 
-	@Secured
 	@GET
 	@Produces("application/json")
 	public Response getJSON() {

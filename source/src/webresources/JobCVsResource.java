@@ -1,14 +1,17 @@
 package webresources;
 
-import javax.ws.rs.Consumes;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-@Path("/jobaccounts")
-public class JobAccountsResource {
+import common.security.Secured;
+
+@Path("/jobcvs")
+public class JobCVsResource {
 
 	@GET
 	@Produces("application/json")
@@ -16,10 +19,10 @@ public class JobAccountsResource {
 		return null;
 	}
 
+	@Secured
 	@POST
-	@Consumes("application/json")
 	@Produces("application/json")
-	public Response createJobAccount(String representation) {
+	public Response create(@Context HttpServletRequest request) {
 		return null;
 	}
 }

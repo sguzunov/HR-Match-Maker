@@ -20,7 +20,7 @@ import persistence.sources.MySQLSource;
 import transformers.JSONModelsTransformer;
 import transformers.contracts.ModelsTransformer;
 
-@Path("/profiles/jobseekers")
+@Path("/jobseekers")
 public class JobSeekersResource {
 
 	@GET
