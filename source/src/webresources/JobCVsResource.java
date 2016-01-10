@@ -1,6 +1,7 @@
 package webresources;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -49,6 +50,21 @@ public class JobCVsResource {
 				responseProviderFactory);
 		HttpRequest httpRequest = new HttpRequest(request);
 		Response response = profilesController.post(httpRequest);
+
+		return response;
+	}
+
+	@GET
+	@Produces("application/json")
+	@Path("/{id}")
+	public Response getJSON(@PathParam("id") int id) {
+		DataSource dataSource = new MySQLSource();
+		JobAccountPersistence jobAccountPersistence = new JobCvDao(dataSource);
+		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
+		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		JobAccountController profilesController = new JobCVsController(jobAccountPersistence, modelsTransformer,
+				responseProviderFactory);
+		Response response = profilesController.select(id);
 
 		return response;
 	}

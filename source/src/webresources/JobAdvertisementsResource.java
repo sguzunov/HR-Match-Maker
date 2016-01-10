@@ -1,9 +1,10 @@
 package webresources;
 
 import javax.servlet.http.HttpServletRequest;
-
+import javax.websocket.server.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -47,6 +48,21 @@ public class JobAdvertisementsResource {
 				modelsTransformer, responseProviderFactory);
 		HttpRequest httpRequest = new HttpRequest(request);
 		Response response = profilesController.post(httpRequest);
+
+		return response;
+	}
+
+	@GET
+	@Produces("application/json")
+	@Path("/{id}")
+	public Response getJSON(@PathParam("id") int id) {
+		DataSource dataSource = new MySQLSource();
+		JobAccountPersistence jobAccountPersistence = new JobAdvertisementDao(dataSource);
+		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
+		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		JobAccountController profilesController = new JobAdvertisementsController(jobAccountPersistence,
+				modelsTransformer, responseProviderFactory);
+		Response response = profilesController.select(id);
 
 		return response;
 	}

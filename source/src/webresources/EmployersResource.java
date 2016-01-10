@@ -11,12 +11,10 @@ import javax.ws.rs.core.Response;
 
 import common.security.Secured;
 import controllers.EmployerProfileController;
-import controllers.JobSeekerProfilesController;
 import controllers.ProfilesController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
 import persistence.EmployerDao;
-import persistence.JobSeekerDao;
 import persistence.contracts.UserProfilePersistence;
 import persistence.sources.DataSource;
 import persistence.sources.MySQLSource;
