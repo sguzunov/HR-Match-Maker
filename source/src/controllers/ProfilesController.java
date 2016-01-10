@@ -6,6 +6,7 @@ import javax.ws.rs.core.Response;
 
 import controllers.contracts.GetController;
 import controllers.contracts.PostController;
+import controllers.contracts.SelectController;
 import enums.StatusCode;
 import http.HttpRequest;
 import http.HttpResponseProvider;
@@ -14,7 +15,7 @@ import models.UserProfile;
 import persistence.contracts.UserProfilePersistence;
 import transformers.contracts.ModelsTransformer;
 
-public abstract class ProfilesController implements GetController, PostController {
+public abstract class ProfilesController implements GetController, PostController, SelectController {
 	protected UserProfilePersistence persistence;
 	protected ModelsTransformer modelsTransformer;
 	protected ResponseProviderFactory responseProviderFactory;
@@ -27,7 +28,24 @@ public abstract class ProfilesController implements GetController, PostControlle
 	}
 
 	@Override
-	public abstract Response post(HttpRequest request);
+	public Response select(int identifier) {
+		HttpResponseProvider httpResponseProvider = null;
+		// try {
+		// UserProfile profiles = this.persistence.selectBy(identifier);
+		// String modelsAsJsonString =
+		// this.modelsTransformer.transformCollectionToString(profiles);
+		//
+		// httpResponseProvider =
+		// this.responseProviderFactory.getResponseProvider(StatusCode.OK);
+		// httpResponseProvider.setResponseBody(modelsAsJsonString);
+		// } catch (Exception e) {
+		// httpResponseProvider =
+		// this.responseProviderFactory.getResponseProvider(StatusCode.BADREQUEST);
+		// e.printStackTrace();
+		// }
+
+		return httpResponseProvider.getResponse();
+	}
 
 	@Override
 	public Response get() {
@@ -46,4 +64,5 @@ public abstract class ProfilesController implements GetController, PostControlle
 		return httpResponseProvider.getResponse();
 	}
 
+	public abstract Response post(HttpRequest request);
 }

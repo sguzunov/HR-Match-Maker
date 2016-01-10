@@ -4,35 +4,32 @@ import javax.servlet.http.HttpServletRequest;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import common.security.Secured;
-import controllers.JobSeekerProfileController;
-import controllers.ProfilesController;
+import controllers.JobAccountController;
+import controllers.JobAdvertisementsController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
-import persistence.JobSeekerDao;
-import persistence.contracts.UserProfilePersistence;
+import persistence.JobAdvertisementDao;
+import persistence.contracts.JobAccountPersistence;
 import persistence.sources.DataSource;
 import persistence.sources.MySQLSource;
 import transformers.JSONModelsTransformer;
 import transformers.contracts.ModelsTransformer;
 
-@Path("/jobseekers")
-public class JobSeekersResource {
-
+public class JobAdvertisementsResource {
 	@GET
 	@Produces("application/json")
 	public Response getJSON() {
 		DataSource dataSource = new MySQLSource();
-		UserProfilePersistence jobSeekersDao = new JobSeekerDao(dataSource);
+		JobAccountPersistence jobAccountPersistence = new JobAdvertisementDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
-		ProfilesController profilesController = new JobSeekerProfileController(jobSeekersDao, modelsTransformer,
-				responseProviderFactory);
+		JobAccountController profilesController = new JobAdvertisementsController(jobAccountPersistence,
+				modelsTransformer, responseProviderFactory);
 		Response response = profilesController.get();
 
 		return response;
@@ -43,11 +40,11 @@ public class JobSeekersResource {
 	@Produces("application/json")
 	public Response create(@Context HttpServletRequest request) {
 		DataSource dataSource = new MySQLSource();
-		UserProfilePersistence jobSeekerDao = new JobSeekerDao(dataSource);
+		JobAccountPersistence jobAccountPersistence = new JobAdvertisementDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
-		ProfilesController profilesController = new JobSeekerProfileController(jobSeekerDao, modelsTransformer,
-				responseProviderFactory);
+		JobAccountController profilesController = new JobAdvertisementsController(jobAccountPersistence,
+				modelsTransformer, responseProviderFactory);
 		HttpRequest httpRequest = new HttpRequest(request);
 		Response response = profilesController.post(httpRequest);
 

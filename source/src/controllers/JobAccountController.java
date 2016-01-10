@@ -10,7 +10,7 @@ import enums.StatusCode;
 import http.HttpRequest;
 import http.HttpResponseProvider;
 import http.ResponseProviderFactory;
-import models.UserProfile;
+import models.JobAccount;
 import persistence.contracts.JobAccountPersistence;
 import transformers.contracts.ModelsTransformer;
 
@@ -33,7 +33,7 @@ public abstract class JobAccountController implements GetController, PostControl
 	public Response get() {
 		HttpResponseProvider httpResponseProvider = null;
 		try {
-			Collection<UserProfile> profiles = this.persistence.retrieve();
+			Collection<JobAccount> profiles = this.persistence.retrieve();
 			String modelsAsJsonString = this.modelsTransformer.transformCollectionToString(profiles);
 
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.OK);

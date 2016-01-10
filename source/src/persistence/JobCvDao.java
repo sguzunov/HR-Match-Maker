@@ -20,26 +20,26 @@ import persistence.contracts.JobAccountPersistence;
 import persistence.sources.DataSource;
 
 public class JobCvDao extends Dao implements JobAccountPersistence {
-	protected static final String WORKPOSITION_COLUMN = "workposition";
-	protected static final String WORKTYPE_COLUMN = "worktype";
-	protected static final String REQUIREDEXPERIENCE_COLUMN = "requiredexperience";
 	private static final String JOBCV_ID_COLUMN = "jobcv_id";
+	private static final String WORKPOSITION_COLUMN = "workposition";
+	private static final String WORKTYPE_COLUMN = "worktype";
+	private static final String REQUIREDEXPERIENCE_COLUMN = "requiredexperience";
 
 	public JobCvDao(DataSource dataSource) {
 		super(dataSource);
 	}
 
 	@Override
-	public <E> E selectBy(String identifier) {
+	public <E> E selectBy(int identifier) {
 		JobCV jobCV = null;
-		int id = Integer.parseInt(identifier);
 		try {
 			super.openConnection();
 			super.defineStatement(SqlQueries.RETRIEVE_JOBCV_BY_ID_SQL_QUERY);
 
-			super.preparedStatement.setInt(1, id);
+			super.preparedStatement.setInt(1, identifier);
 			super.resultSet = super.preparedStatement.executeQuery();
 			while (super.resultSet.next()) {
+				int id = super.resultSet.getInt(JOBCV_ID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 				String city = super.resultSet.getString(CITY_COLUMN);
@@ -59,9 +59,9 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 				User user = new User(userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
-						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBCVS_SQL_QUERY, id);
+						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBCVS_ID_SQL_QUERY, id);
 				Collection<String> knownLanguages = PersistenceHelper.retrieveAllLanguages(super.connection,
-						SqlQueries.RETRIEVE_ALL_LANGUAGES_SQL_QUERY, id);
+						SqlQueries.RETRIEVE_ALL_LANGUAGES_BY_JOBCV_ID_SQL_QUERY, id);
 				jobCV = new JobCV(id, user, location, requiredEducation, workPosition, workType, requiredExperience,
 						age, carrerFields, knownLanguages);
 			}
@@ -96,7 +96,7 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 			String educationAsString = EnumUtils.ConvertEnumValueToString(newJobCV.getRequiredEducation());
 			String workPositionAsString = EnumUtils.ConvertEnumValueToString(newJobCV.getWorkPostion());
 			String workTypeAsString = EnumUtils.ConvertEnumValueToString(newJobCV.getWorkType());
-			super.preparedStatement.setString(1, newJobCV.getCreatedBy().getUserName());
+			super.preparedStatement.setString(1, newJobCV.getUser().getUserName());
 			super.preparedStatement.setString(2, newJobCV.getLocation().getCity());
 			super.preparedStatement.setString(3, newJobCV.getLocation().getCountry());
 			super.preparedStatement.setString(4, educationAsString);
@@ -149,7 +149,7 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 			super.resultSet = super.preparedStatement.executeQuery();
 			queryReult = new ArrayList<E>();
 			while (super.resultSet.next()) {
-				int jobCvId = super.resultSet.getInt(JOBCV_ID_COLUMN);
+				int id = super.resultSet.getInt(JOBCV_ID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 				String city = super.resultSet.getString(CITY_COLUMN);
@@ -168,10 +168,10 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 				User user = new User(userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
-						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBCVS_SQL_QUERY, jobCvId);
+						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBCVS_ID_SQL_QUERY, id);
 				Collection<String> knownLanguages = PersistenceHelper.retrieveAllLanguages(super.connection,
-						SqlQueries.RETRIEVE_ALL_LANGUAGES_SQL_QUERY, jobCvId);
-				JobCV jobCV = new JobCV(jobCvId, user, location, requiredEducation, workPosition, workType,
+						SqlQueries.RETRIEVE_ALL_LANGUAGES_BY_JOBCV_ID_SQL_QUERY, id);
+				JobCV jobCV = new JobCV(id, user, location, requiredEducation, workPosition, workType,
 						requiredExperience, age, carrerFields, knownLanguages);
 
 				queryReult.add((E) jobCV);

@@ -1,7 +1,6 @@
 package models;
 
 import java.util.Collection;
-import java.util.List;
 
 import enums.Education;
 import enums.CarrerField;
@@ -11,7 +10,7 @@ import models.contracts.ComparableJobAccount;
 
 public abstract class JobAccount implements ComparableJobAccount {
 	private int id;
-	private User createdBy;
+	private User user;
 	private Location location;
 	private Education requiredEducation;
 	private WorkPosition workPosition;
@@ -19,10 +18,10 @@ public abstract class JobAccount implements ComparableJobAccount {
 	private Boolean requiredExperience;
 	private Collection<CarrerField> carrerFields;
 
-	public JobAccount(int id, User createBy, Location location, Education requiredEducation, WorkPosition workPosition,
+	public JobAccount(int id, User user, Location location, Education requiredEducation, WorkPosition workPosition,
 			WorkType workType, Boolean requiredExperience, Collection<CarrerField> carrerFields) {
 		this.id = id;
-		this.setCreatedBy(createBy);
+		this.setUser(user);
 		this.setLocation(location);
 		this.setRequiredEducation(requiredEducation);
 		this.setWorkPosition(workPosition);
@@ -35,12 +34,12 @@ public abstract class JobAccount implements ComparableJobAccount {
 		return this.id;
 	}
 
-	public User getCreatedBy() {
-		return this.createdBy;
+	public User getUser() {
+		return this.user;
 	}
 
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Override

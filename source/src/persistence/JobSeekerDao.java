@@ -6,13 +6,9 @@ import java.util.Collection;
 
 import common.EnumUtils;
 import common.SqlQueries;
-import enums.CarrerField;
 import enums.Education;
 import enums.UserType;
-import enums.WorkPosition;
-import enums.WorkType;
 import helpers.PersistenceHelper;
-import models.JobCV;
 import models.JobSeekerProfile;
 import models.Location;
 import models.User;
@@ -30,13 +26,13 @@ public class JobSeekerDao extends Dao implements UserProfilePersistence {
 	}
 
 	@Override
-	public <E> E selectBy(String identifier) {
+	public <E> E selectBy(int identifier) {
 		JobSeekerProfile jobSeekerProfile = null;
 		try {
 			super.openConnection();
-			super.defineStatement(SqlQueries.RETRIEVE_JOBSEEKERPROFILE_BY_NAME_SQL_QUERY);
+			super.defineStatement(SqlQueries.RETRIEVE_JOBSEEKERPROFILE_BY_ID_SQL_QUERY);
 
-			super.preparedStatement.setString(1, identifier);
+			super.preparedStatement.setInt(1, identifier);
 			super.resultSet = super.preparedStatement.executeQuery();
 
 			int id = super.resultSet.getInt(PROFILE_ID_COLUMN);

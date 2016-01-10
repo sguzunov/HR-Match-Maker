@@ -20,6 +20,7 @@ import persistence.contracts.JobAccountPersistence;
 import persistence.sources.DataSource;
 
 public class JobAdvertisementDao extends Dao implements JobAccountPersistence {
+	private static final String JOBADVERTISEMENT__ID_COLUMN = "jobadvertisement_id";
 	protected static final String WORKPOSITION_COLUMN = "workposition";
 	protected static final String WORKTYPE_COLUMN = "worktype";
 	protected static final String REQUIREDEXPERIENCE_COLUMN = "requiredexperience";
@@ -32,16 +33,16 @@ public class JobAdvertisementDao extends Dao implements JobAccountPersistence {
 	}
 
 	@Override
-	public <E> E selectBy(String identifier) {
+	public <E> E selectBy(int identifier) {
 		JobAdvertisement jobAd = null;
-		int id = Integer.parseInt(identifier);
 		try {
 			super.openConnection();
 			super.defineStatement(SqlQueries.RETRIEVE_JOBADVERTISEMENT_BY_ID_SQL_QUERY);
 
-			super.preparedStatement.setInt(1, id);
+			super.preparedStatement.setInt(1, identifier);
 			super.resultSet = super.preparedStatement.executeQuery();
 			while (super.resultSet.next()) {
+				int id = super.resultSet.getInt(JOBADVERTISEMENT__ID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 				String city = super.resultSet.getString(CITY_COLUMN);
@@ -60,9 +61,11 @@ public class JobAdvertisementDao extends Dao implements JobAccountPersistence {
 				WorkType workType = EnumUtils.ConvertStringToEnumValue(worktypeAsString, WorkType.class);
 				User user = new User(userName, userType);
 				Location location = new Location(city, country);
+
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
-						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBADVERTISEMENTS_SQL_QUERY, id);
-				jobAd = new JobAdvertisement(id, user, location, requiredEducation, workPosition, workType,
+						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBADVERTISEMENTS_ID_SQL_QUERY, id);
+
+				jobAd = new JobAdvertisement(identifier, user, location, requiredEducation, workPosition, workType,
 						requiredExperience, title, resume, carrerFields);
 			}
 
@@ -96,7 +99,7 @@ public class JobAdvertisementDao extends Dao implements JobAccountPersistence {
 			String educationAsString = EnumUtils.ConvertEnumValueToString(newJobAd.getRequiredEducation());
 			String workPositionAsString = EnumUtils.ConvertEnumValueToString(newJobAd.getWorkPostion());
 			String workTypeAsString = EnumUtils.ConvertEnumValueToString(newJobAd.getWorkType());
-			super.preparedStatement.setString(1, newJobAd.getCreatedBy().getUserName());
+			super.preparedStatement.setString(1, newJobAd.getUser().getUserName());
 			super.preparedStatement.setString(2, newJobAd.getLocation().getCity());
 			super.preparedStatement.setString(3, newJobAd.getLocation().getCountry());
 			super.preparedStatement.setString(4, educationAsString);
@@ -149,7 +152,7 @@ public class JobAdvertisementDao extends Dao implements JobAccountPersistence {
 			super.resultSet = super.preparedStatement.executeQuery();
 			queryReult = new ArrayList<E>();
 			while (super.resultSet.next()) {
-				int jobAdId = super.resultSet.getInt(JOBADVERTISEMENT_ID_COLUMN);
+				int id = super.resultSet.getInt(JOBADVERTISEMENT_ID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 				String city = super.resultSet.getString(CITY_COLUMN);
@@ -170,8 +173,8 @@ public class JobAdvertisementDao extends Dao implements JobAccountPersistence {
 				User user = new User(userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
-						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBADVERTISEMENTS_SQL_QUERY, jobAdId);
-				JobAdvertisement jobAd = new JobAdvertisement(jobAdId, user, location, requiredEducation, workPosition,
+						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBADVERTISEMENTS_ID_SQL_QUERY, id);
+				JobAdvertisement jobAd = new JobAdvertisement(id, user, location, requiredEducation, workPosition,
 						workType, requiredExperience, title, resume, carrerFields);
 
 				queryReult.add((E) jobAd);

@@ -29,13 +29,13 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 	}
 
 	@Override
-	public <E> E selectBy(String identifier) {
+	public <E> E selectBy(int identifier) {
 		EmployerProfile employerProfile = null;
 		try {
 			super.openConnection();
-			super.defineStatement(SqlQueries.RETRIEVE_EMPLOYERPROFILE_BY_NAME_SQL_QUERY);
+			super.defineStatement(SqlQueries.RETRIEVE_EMPLOYERPROFILE_BY_ID_SQL_QUERY);
 
-			super.preparedStatement.setString(1, identifier);
+			super.preparedStatement.setInt(1, identifier);
 			super.resultSet = super.preparedStatement.executeQuery();
 
 			int id = super.resultSet.getInt(PROFILE_ID_COLUMN);
@@ -49,7 +49,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 			String companyName = super.resultSet.getString(COMPANYAME_COLUMN);
 
 			Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
-					SqlQueries.RETRIEVE_EMPLOYERPROFILE_BY_NAME_SQL_QUERY, id);
+					SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILE_ID_SQL_QUERY, id);
 			UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
 			User user = new User(userName, userType);
 			Location location = new Location(city, country);
@@ -143,7 +143,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 				User user = new User(userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
-						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILES_ID_SQL_QUERY, id);
+						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILE_ID_SQL_QUERY, id);
 				EmployerProfile employerProfile = new EmployerProfile(id, user, firstName, lastName, location, webSite,
 						companyName, carrerFields);
 
