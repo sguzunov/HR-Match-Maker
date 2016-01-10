@@ -40,6 +40,7 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 			super.resultSet = super.preparedStatement.executeQuery();
 			while (super.resultSet.next()) {
 				int id = super.resultSet.getInt(JOBCV_ID_COLUMN);
+				int userId = super.resultSet.getInt(USERID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 				String city = super.resultSet.getString(CITY_COLUMN);
@@ -56,7 +57,7 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 						WorkPosition.class);
 				WorkType workType = EnumUtils.ConvertStringToEnumValue(worktypeAsString, WorkType.class);
 
-				User user = new User(userName, userType);
+				User user = new User(userId, userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
 						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBCVS_ID_SQL_QUERY, id);
@@ -150,6 +151,7 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 			queryReult = new ArrayList<E>();
 			while (super.resultSet.next()) {
 				int id = super.resultSet.getInt(JOBCV_ID_COLUMN);
+				int userId = super.resultSet.getInt(USERID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 				String city = super.resultSet.getString(CITY_COLUMN);
@@ -165,7 +167,7 @@ public class JobCvDao extends Dao implements JobAccountPersistence {
 				WorkPosition workPosition = EnumUtils.ConvertStringToEnumValue(workPositionAsString,
 						WorkPosition.class);
 				WorkType workType = EnumUtils.ConvertStringToEnumValue(worktypeAsString, WorkType.class);
-				User user = new User(userName, userType);
+				User user = new User(userId, userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
 						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_JOBCVS_ID_SQL_QUERY, id);

@@ -3,11 +3,13 @@ package models;
 import enums.UserType;
 
 public class User {
+	private int id;
 	private String userName;
 	private String password;
 	private UserType userType;
 
-	public User(String userName, UserType userType) {
+	public User(int id, String userName, UserType userType) {
+		this.id = id;
 		this.userName = userName;
 		this.userType = userType;
 	}
@@ -16,6 +18,14 @@ public class User {
 		this.userName = userName;
 		this.password = password;
 		this.userType = userType;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getUserName() {

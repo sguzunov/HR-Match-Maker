@@ -36,6 +36,7 @@ public class JobSeekerDao extends Dao implements UserProfilePersistence {
 			super.resultSet = super.preparedStatement.executeQuery();
 
 			int id = super.resultSet.getInt(PROFILE_ID_COLUMN);
+			int userId = super.resultSet.getInt(USERID_COLUMN);
 			String userName = super.resultSet.getString(USERNAME_COLUMN);
 			String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 			String firstName = super.resultSet.getString(FIRSTNAME_COLUMN);
@@ -48,7 +49,7 @@ public class JobSeekerDao extends Dao implements UserProfilePersistence {
 
 			UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
 			Education requiredEducation = EnumUtils.ConvertStringToEnumValue(educationAsString, Education.class);
-			User user = new User(userName, userType);
+			User user = new User(userId, userName, userType);
 			Location location = new Location(city, country);
 
 			jobSeekerProfile = new JobSeekerProfile(id, user, firstName, lastName, location, webSite, age,
@@ -126,6 +127,7 @@ public class JobSeekerDao extends Dao implements UserProfilePersistence {
 
 			while (super.resultSet.next()) {
 				int id = super.resultSet.getInt(PROFILE_ID_COLUMN);
+				int userId = super.resultSet.getInt(USERID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 				String firstName = super.resultSet.getString(FIRSTNAME_COLUMN);
@@ -138,7 +140,7 @@ public class JobSeekerDao extends Dao implements UserProfilePersistence {
 
 				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
 				Education requiredEducation = EnumUtils.ConvertStringToEnumValue(educationAsString, Education.class);
-				User user = new User(userName, userType);
+				User user = new User(userId, userName, userType);
 				Location location = new Location(city, country);
 				JobSeekerProfile jobSeekerProfile = new JobSeekerProfile(id, user, firstName, lastName, location,
 						webSite, age, requiredEducation);

@@ -1,6 +1,7 @@
 package webresources;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,10 +11,12 @@ import javax.ws.rs.core.Response;
 
 import common.security.Secured;
 import controllers.EmployerProfileController;
+import controllers.JobSeekerProfilesController;
 import controllers.ProfilesController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
 import persistence.EmployerDao;
+import persistence.JobSeekerDao;
 import persistence.contracts.UserProfilePersistence;
 import persistence.sources.DataSource;
 import persistence.sources.MySQLSource;
@@ -50,6 +53,21 @@ public class EmployersResource {
 		HttpRequest httpRequest = new HttpRequest(request);
 
 		Response response = profilesController.post(httpRequest);
+
+		return response;
+	}
+
+	@GET
+	@Produces("application/json")
+	@Path("/{id}")
+	public Response getJSON(@PathParam("id") int id) {
+		DataSource dataSource = new MySQLSource();
+		UserProfilePersistence jobSeekersDao = new EmployerDao(dataSource);
+		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
+		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		ProfilesController profilesController = new EmployerProfileController(jobSeekersDao, modelsTransformer,
+				responseProviderFactory);
+		Response response = profilesController.select(id);
 
 		return response;
 	}

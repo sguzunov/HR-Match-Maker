@@ -1,7 +1,7 @@
 package webresources;
 
 import javax.servlet.http.HttpServletRequest;
-
+import javax.websocket.server.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,7 +10,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import common.security.Secured;
-import controllers.JobSeekerProfileController;
+import controllers.JobSeekerProfilesController;
 import controllers.ProfilesController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
@@ -31,7 +31,7 @@ public class JobSeekersResource {
 		UserProfilePersistence jobSeekersDao = new JobSeekerDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
-		ProfilesController profilesController = new JobSeekerProfileController(jobSeekersDao, modelsTransformer,
+		ProfilesController profilesController = new JobSeekerProfilesController(jobSeekersDao, modelsTransformer,
 				responseProviderFactory);
 		Response response = profilesController.get();
 
@@ -46,10 +46,25 @@ public class JobSeekersResource {
 		UserProfilePersistence jobSeekerDao = new JobSeekerDao(dataSource);
 		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
 		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
-		ProfilesController profilesController = new JobSeekerProfileController(jobSeekerDao, modelsTransformer,
+		ProfilesController profilesController = new JobSeekerProfilesController(jobSeekerDao, modelsTransformer,
 				responseProviderFactory);
 		HttpRequest httpRequest = new HttpRequest(request);
 		Response response = profilesController.post(httpRequest);
+
+		return response;
+	}
+
+	@GET
+	@Produces
+	@Path("/{id}")
+	public Response getJSON(@PathParam("id") int id) {
+		DataSource dataSource = new MySQLSource();
+		UserProfilePersistence jobSeekersDao = new JobSeekerDao(dataSource);
+		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
+		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		ProfilesController profilesController = new JobSeekerProfilesController(jobSeekersDao, modelsTransformer,
+				responseProviderFactory);
+		Response response = profilesController.select(id);
 
 		return response;
 	}

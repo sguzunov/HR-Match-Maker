@@ -23,7 +23,7 @@ public class UsersController implements PostController {
 		this.responseProviderFactory = responseProviderFactory;
 	}
 
-	// User registration.
+	// Register user.
 	@Override
 	public Response post(HttpRequest request) {
 		String modelAsJsonString = request.getBody();

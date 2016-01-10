@@ -30,19 +30,16 @@ public abstract class ProfilesController implements GetController, PostControlle
 	@Override
 	public Response select(int identifier) {
 		HttpResponseProvider httpResponseProvider = null;
-		// try {
-		// UserProfile profiles = this.persistence.selectBy(identifier);
-		// String modelsAsJsonString =
-		// this.modelsTransformer.transformCollectionToString(profiles);
-		//
-		// httpResponseProvider =
-		// this.responseProviderFactory.getResponseProvider(StatusCode.OK);
-		// httpResponseProvider.setResponseBody(modelsAsJsonString);
-		// } catch (Exception e) {
-		// httpResponseProvider =
-		// this.responseProviderFactory.getResponseProvider(StatusCode.BADREQUEST);
-		// e.printStackTrace();
-		// }
+		try {
+			UserProfile profile = this.persistence.selectBy(identifier);
+			String modelsAsJsonString = this.modelsTransformer.transformModelToString(profile);
+
+			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.OK);
+			httpResponseProvider.setResponseBody(modelsAsJsonString);
+		} catch (Exception e) {
+			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.BADREQUEST);
+			e.printStackTrace();
+		}
 
 		return httpResponseProvider.getResponse();
 	}

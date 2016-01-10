@@ -10,17 +10,17 @@ import models.JobSeekerProfile;
 import persistence.contracts.UserProfilePersistence;
 import transformers.contracts.ModelsTransformer;
 
-public class JobSeekerProfileController extends ProfilesController {
-	public JobSeekerProfileController(UserProfilePersistence persistence, ModelsTransformer modelsTransformer,
+public class JobSeekerProfilesController extends ProfilesController {
+	public JobSeekerProfilesController(UserProfilePersistence persistence, ModelsTransformer modelsTransformer,
 			ResponseProviderFactory responseProviderFactory) {
 		super(persistence, modelsTransformer, responseProviderFactory);
 	}
 
 	@Override
 	public Response post(HttpRequest request) {
-		String modelAsJsonString = request.getBody();
 		HttpResponseProvider httpResponseProvider = null;
 		try {
+			String modelAsJsonString = request.getBody();
 			JobSeekerProfile jobSeekerProfile = this.modelsTransformer.transformStringToModel(modelAsJsonString,
 					JobSeekerProfile.class);
 			this.persistence.create(jobSeekerProfile);

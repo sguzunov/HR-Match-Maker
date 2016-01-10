@@ -39,6 +39,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 			super.resultSet = super.preparedStatement.executeQuery();
 
 			int id = super.resultSet.getInt(PROFILE_ID_COLUMN);
+			int userId = super.resultSet.getInt(USERID_COLUMN);
 			String userName = super.resultSet.getString(USERNAME_COLUMN);
 			String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 			String firstName = super.resultSet.getString(FIRSTNAME_COLUMN);
@@ -51,7 +52,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 			Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
 					SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILE_ID_SQL_QUERY, id);
 			UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
-			User user = new User(userName, userType);
+			User user = new User(userId, userName, userType);
 			Location location = new Location(city, country);
 
 			employerProfile = new EmployerProfile(id, user, firstName, lastName, location, webSite, companyName,
@@ -130,6 +131,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 
 			while (super.resultSet.next()) {
 				int id = super.resultSet.getInt(PROFILE_ID_COLUMN);
+				int userId = super.resultSet.getInt(USERID_COLUMN);
 				String userName = super.resultSet.getString(USERNAME_COLUMN);
 				String userTypeAsString = super.resultSet.getString(USERTYPE_COLUMN);
 				String firstName = super.resultSet.getString(FIRSTNAME_COLUMN);
@@ -140,7 +142,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 				String companyName = super.resultSet.getString(COMPANYAME_COLUMN);
 
 				UserType userType = EnumUtils.ConvertStringToEnumValue(userTypeAsString, UserType.class);
-				User user = new User(userName, userType);
+				User user = new User(userId, userName, userType);
 				Location location = new Location(city, country);
 				Collection<CarrerField> carrerFields = PersistenceHelper.retrieveAllCarrerFields(super.connection,
 						SqlQueries.RETRIEVE_ALL_CARRERFIELDS_BY_EMPLOYERPROFILE_ID_SQL_QUERY, id);

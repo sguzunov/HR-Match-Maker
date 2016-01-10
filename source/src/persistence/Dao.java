@@ -11,6 +11,7 @@ import persistence.sources.DataSource;
 public abstract class Dao {
 	protected static final String USERNAME_COLUMN = "username";
 	protected static final String USERTYPE_COLUMN = "usertype";
+	protected static final String USERID_COLUMN = "user_id";
 	protected static final String CITY_COLUMN = "city";
 	protected static final String COUNTRY_COLUMN = "country";
 	protected static final String EDUCATION_COLUMN = "education";
