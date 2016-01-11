@@ -3,6 +3,7 @@ package common.security;
 import java.io.IOException;
 
 import javax.annotation.Priority;
+import javax.inject.Inject;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -11,12 +12,14 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import controllers.AuthenticationController;
-
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
+	private static final String MISSING_AUTH_HEADER_MESSAGE = "Authorization header must be provided";
+
+	@Inject
+	private Authentication authentication;
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -38,10 +41,10 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 		}
 	}
 
-	private void validateToken(String token) throws Exception {
-		boolean isAutorized = AuthenticationController.tokens.containsValue(token);
+	private void validateToken(String authToken) throws Exception {
+		boolean isAutorized = this.authentication.isValidAuthToken(authToken);
 		if (!isAutorized) {
-			throw new NotAuthorizedException("Authorization header must be provided");
+			throw new NotAuthorizedException(MISSING_AUTH_HEADER_MESSAGE);
 		}
 	}
 }

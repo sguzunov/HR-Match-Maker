@@ -38,6 +38,7 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 			super.preparedStatement.setInt(1, identifier);
 			super.resultSet = super.preparedStatement.executeQuery();
 
+			super.resultSet.next();
 			int id = super.resultSet.getInt(PROFILE_ID_COLUMN);
 			int userId = super.resultSet.getInt(USERID_COLUMN);
 			String userName = super.resultSet.getString(USERNAME_COLUMN);
@@ -78,6 +79,10 @@ public class EmployerDao extends Dao implements UserProfilePersistence {
 
 	@Override
 	public <E> void create(E data) {
+		if (data == null) {
+			throw new NullPointerException();
+		}
+
 		EmployerProfile employerProfile = (EmployerProfile) data;
 		try {
 			super.connection = super.dataSource.getConnection();

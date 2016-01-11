@@ -1,13 +1,11 @@
 package controllers;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import common.RandomProvider;
+import common.security.Authentication;
 import controllers.contracts.DeleteController;
 import controllers.contracts.PutController;
 import enums.StatusCode;
@@ -22,40 +20,37 @@ import transformers.contracts.ModelsTransformer;
 
 @Path("/users/auth")
 public class AuthenticationController implements PutController, DeleteController {
-	private static final int USERNAME_MIN_LENGTH = 6;
-	private static final int PASSWORD_MIN_LENGTH = 10;
-
-	public static Map<String, String> tokens = new HashMap<String, String>();
-
 	private UserPersistence persistence;
 	private ModelsTransformer modelsTransformer;
 	private ResponseProviderFactory responseProviderFactory;
+	private Authentication authentication;
 
 	public AuthenticationController(UserPersistence persistence, ModelsTransformer modelsTransformer,
-			ResponseProviderFactory responseProviderFactory) {
+			ResponseProviderFactory responseProviderFactory, Authentication authentication) {
 		this.persistence = persistence;
 		this.modelsTransformer = modelsTransformer;
 		this.responseProviderFactory = responseProviderFactory;
+		this.authentication = authentication;
 	}
 
 	// logIn
 	@Override
 	public Response put(HttpRequest request) {
 		String modelAsJsonString = request.getBody();
-		User user = this.modelsTransformer.transformStringToModel(modelAsJsonString, User.class);
-
 		HttpResponseProvider httpResponseProvider = null;
 		try {
+			User user = this.modelsTransformer.transformStringToModel(modelAsJsonString, User.class);
 			String username = user.getUserName();
 			String password = user.getPassword();
-			this.authenticate(username, password);
+			Collection<User> users = this.persistence.retrieve();
 
-			String authToken = this.issueToken();
-			tokens.put(username, authToken);
+			this.authentication.authenticate(username, password, users);
 
+			String authToken = this.authentication.issueToken();
 			Credentials userCredentials = new Credentials(username, authToken);
-			String userCredentialsAsString = this.modelsTransformer.transformModelToString(userCredentials);
+			this.authentication.saveCredentials(userCredentials);
 
+			String userCredentialsAsString = this.modelsTransformer.transformModelToString(userCredentials);
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.OK);
 			httpResponseProvider.setResponseBody(userCredentialsAsString);
 		} catch (Exception e) {
@@ -70,17 +65,17 @@ public class AuthenticationController implements PutController, DeleteController
 	@Override
 	public Response delete(HttpRequest request) {
 		String modelAsJsonString = request.getBody();
-		Credentials credentials = this.modelsTransformer.transformStringToModel(modelAsJsonString, Credentials.class);
-
 		HttpResponseProvider httpResponseProvider = null;
 		try {
-			String username = credentials.getUserName();
-			String authKey = credentials.getAuthKey();
-			if (!this.isUserLogged(username, authKey)) {
+
+			Credentials credentials = this.modelsTransformer.transformStringToModel(modelAsJsonString,
+					Credentials.class);
+
+			if (!this.authentication.isUserLogged(credentials)) {
 				throw new InvalidUserException();
 			}
 
-			tokens.remove(username);
+			this.authentication.removeCredentials(credentials);
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.OK);
 		} catch (Exception e) {
 			httpResponseProvider = this.responseProviderFactory.getResponseProvider(StatusCode.BADREQUEST);
@@ -88,35 +83,6 @@ public class AuthenticationController implements PutController, DeleteController
 		}
 
 		return httpResponseProvider.getResponse();
-	}
-
-	private boolean isUserLogged(String username, String authKey) {
-		return tokens.containsKey(username);
-	}
-
-	private void authenticate(String username, String password) throws InvalidUserException {
-		Collection<User> allRegisteredUsers = this.persistence.retrieve();
-		if (password.length() < PASSWORD_MIN_LENGTH || username.length() < USERNAME_MIN_LENGTH) {
-			throw new InvalidUserException();
-		}
-
-		boolean isUserRegistered = false;
-		for (User user : allRegisteredUsers) {
-			if (user.getUserName().equals(username) && user.getPassword().equals(password)) {
-				isUserRegistered = true;
-				break;
-			}
-		}
-
-		if (!isUserRegistered) {
-			throw new InvalidUserException();
-		}
-	}
-
-	private String issueToken() {
-		String token = RandomProvider.generaterandomUUIDFromString();
-
-		return token;
 	}
 
 }

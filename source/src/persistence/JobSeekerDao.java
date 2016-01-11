@@ -35,6 +35,7 @@ public class JobSeekerDao extends Dao implements UserProfilePersistence {
 			super.preparedStatement.setInt(1, identifier);
 			super.resultSet = super.preparedStatement.executeQuery();
 
+			super.resultSet.next();
 			int id = super.resultSet.getInt(PROFILE_ID_COLUMN);
 			int userId = super.resultSet.getInt(USERID_COLUMN);
 			String userName = super.resultSet.getString(USERNAME_COLUMN);

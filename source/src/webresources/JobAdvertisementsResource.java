@@ -1,7 +1,8 @@
 package webresources;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,21 +15,27 @@ import controllers.JobAccountController;
 import controllers.JobAdvertisementsController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
-import persistence.JobAdvertisementDao;
 import persistence.contracts.JobAccountPersistence;
-import persistence.sources.DataSource;
-import persistence.sources.MySQLSource;
-import transformers.JSONModelsTransformer;
+import persistence.factories.DaoFactory;
 import transformers.contracts.ModelsTransformer;
 
+@Path("/jobadvertisements")
 public class JobAdvertisementsResource {
+
+	@Inject
+	private ModelsTransformer modelsTransformer;
+
+	@Inject
+	private ResponseProviderFactory responseProviderFactory;
+
+	@Inject
+	private DaoFactory daoFactory;
+
+	@Secured
 	@GET
 	@Produces("application/json")
 	public Response getJSON() {
-		DataSource dataSource = new MySQLSource();
-		JobAccountPersistence jobAccountPersistence = new JobAdvertisementDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		JobAccountPersistence jobAccountPersistence = this.daoFactory.getJobAdvertisementDao();
 		JobAccountController profilesController = new JobAdvertisementsController(jobAccountPersistence,
 				modelsTransformer, responseProviderFactory);
 		Response response = profilesController.get();
@@ -40,10 +47,7 @@ public class JobAdvertisementsResource {
 	@POST
 	@Produces("application/json")
 	public Response create(@Context HttpServletRequest request) {
-		DataSource dataSource = new MySQLSource();
-		JobAccountPersistence jobAccountPersistence = new JobAdvertisementDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		JobAccountPersistence jobAccountPersistence = this.daoFactory.getJobAdvertisementDao();
 		JobAccountController profilesController = new JobAdvertisementsController(jobAccountPersistence,
 				modelsTransformer, responseProviderFactory);
 		HttpRequest httpRequest = new HttpRequest(request);
@@ -54,12 +58,9 @@ public class JobAdvertisementsResource {
 
 	@GET
 	@Produces("application/json")
-	@Path("/{id}")
-	public Response getJSON(@PathParam("id") int id) {
-		DataSource dataSource = new MySQLSource();
-		JobAccountPersistence jobAccountPersistence = new JobAdvertisementDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+	@Path("{id}")
+	public Response getJSON(@PathParam("id") Integer id) {
+		JobAccountPersistence jobAccountPersistence = this.daoFactory.getJobAdvertisementDao();
 		JobAccountController profilesController = new JobAdvertisementsController(jobAccountPersistence,
 				modelsTransformer, responseProviderFactory);
 		Response response = profilesController.select(id);

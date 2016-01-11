@@ -10,11 +10,11 @@
 
 	<script>
 		$.ajax({
-			url : "http://localhost:8080/HRMatchMaker/api/profiles/my-profile",
+			url : "http://localhost:8080/HRMatchMaker/api/employers/10",
 			contentType : "application/json",
 			success : function(result) {
 				console.log('Yes');
-				console.log(result.luck);
+				console.log(result);
 			},
 			error : function(data) {
 				console.log('No');

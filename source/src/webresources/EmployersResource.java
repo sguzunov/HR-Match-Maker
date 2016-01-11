@@ -1,7 +1,8 @@
 package webresources;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,23 +15,26 @@ import controllers.EmployerProfileController;
 import controllers.ProfilesController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
-import persistence.EmployerDao;
 import persistence.contracts.UserProfilePersistence;
-import persistence.sources.DataSource;
-import persistence.sources.MySQLSource;
-import transformers.JSONModelsTransformer;
+import persistence.factories.DaoFactory;
 import transformers.contracts.ModelsTransformer;
 
 @Path("/employers")
 public class EmployersResource {
 
+	@Inject
+	private ModelsTransformer modelsTransformer;
+
+	@Inject
+	private ResponseProviderFactory responseProviderFactory;
+
+	@Inject
+	private DaoFactory daoFactory;
+
 	@GET
 	@Produces("application/json")
 	public Response getJSON() {
-		DataSource dataSource = new MySQLSource();
-		UserProfilePersistence employerDao = new EmployerDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		UserProfilePersistence employerDao = this.daoFactory.getEmployerDao();
 		ProfilesController profilesController = new EmployerProfileController(employerDao, modelsTransformer,
 				responseProviderFactory);
 		Response response = profilesController.get();
@@ -42,10 +46,7 @@ public class EmployersResource {
 	@POST
 	@Produces("application/json")
 	public Response create(@Context HttpServletRequest request) {
-		DataSource dataSource = new MySQLSource();
-		UserProfilePersistence employerDao = new EmployerDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		UserProfilePersistence employerDao = this.daoFactory.getEmployerDao();
 		ProfilesController profilesController = new EmployerProfileController(employerDao, modelsTransformer,
 				responseProviderFactory);
 		HttpRequest httpRequest = new HttpRequest(request);
@@ -58,11 +59,8 @@ public class EmployersResource {
 	@GET
 	@Produces("application/json")
 	@Path("/{id}")
-	public Response getJSON(@PathParam("id") int id) {
-		DataSource dataSource = new MySQLSource();
-		UserProfilePersistence jobSeekersDao = new EmployerDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+	public Response getJSON(@PathParam("id") Integer id) {
+		UserProfilePersistence jobSeekersDao = this.daoFactory.getEmployerDao();
 		ProfilesController profilesController = new EmployerProfileController(jobSeekersDao, modelsTransformer,
 				responseProviderFactory);
 		Response response = profilesController.select(id);

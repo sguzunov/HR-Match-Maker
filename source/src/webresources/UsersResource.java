@@ -1,5 +1,6 @@
 package webresources;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
@@ -9,29 +10,35 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
+import common.security.Authentication;
 import controllers.AuthenticationController;
 import controllers.UsersController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
-import persistence.UserDao;
 import persistence.contracts.UserPersistence;
-import persistence.sources.DataSource;
-import persistence.sources.MySQLSource;
-import transformers.JSONModelsTransformer;
+import persistence.factories.DaoFactory;
 import transformers.contracts.ModelsTransformer;
 
 @Path("/users")
 public class UsersResource {
 
+	@Inject
+	private ModelsTransformer modelsTransformer;
+
+	@Inject
+	private ResponseProviderFactory responseProviderFactory;
+
+	@Inject
+	private DaoFactory daoFactory;
+
+	@Inject
+	private Authentication authentication;
+
 	@POST
 	@Produces("application/json")
 	public Response create(@Context HttpServletRequest servletRequest) {
-		DataSource dataSource = new MySQLSource();
-		UserPersistence userDao = new UserDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		UserPersistence userDao = this.daoFactory.getUserDao();
 		HttpRequest httpRequest = new HttpRequest(servletRequest);
-
 		UsersController controller = new UsersController(userDao, modelsTransformer, responseProviderFactory);
 		Response response = controller.post(httpRequest);
 
@@ -42,13 +49,10 @@ public class UsersResource {
 	@Path("/auth")
 	@Produces("application/json")
 	public Response authenticate(@Context HttpServletRequest servletRequest) {
-		DataSource dataSource = new MySQLSource();
-		UserPersistence userDao = new UserDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory factory = new ResponseProviderFactory();
+		UserPersistence userDao = this.daoFactory.getUserDao();
 		HttpRequest httpRequest = new HttpRequest(servletRequest);
-
-		AuthenticationController controller = new AuthenticationController(userDao, modelsTransformer, factory);
+		AuthenticationController controller = new AuthenticationController(userDao, modelsTransformer,
+				this.responseProviderFactory, this.authentication);
 		Response response = controller.put(httpRequest);
 
 		return response;
@@ -57,13 +61,10 @@ public class UsersResource {
 	@DELETE
 	@Produces("application/json")
 	public Response logOut(@Context HttpServletRequest servletRequest) {
-		DataSource dataSource = new MySQLSource();
-		UserPersistence userDao = new UserDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory factory = new ResponseProviderFactory();
+		UserPersistence userDao = this.daoFactory.getUserDao();
 		HttpRequest httpRequest = new HttpRequest(servletRequest);
-
-		AuthenticationController controller = new AuthenticationController(userDao, modelsTransformer, factory);
+		AuthenticationController controller = new AuthenticationController(userDao, modelsTransformer,
+				this.responseProviderFactory, this.authentication);
 		Response response = controller.delete(httpRequest);
 
 		return response;

@@ -1,7 +1,8 @@
 package webresources;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,23 +15,26 @@ import controllers.JobAccountController;
 import controllers.JobCVsController;
 import http.HttpRequest;
 import http.ResponseProviderFactory;
-import persistence.JobCvDao;
 import persistence.contracts.JobAccountPersistence;
-import persistence.sources.DataSource;
-import persistence.sources.MySQLSource;
-import transformers.JSONModelsTransformer;
+import persistence.factories.DaoFactory;
 import transformers.contracts.ModelsTransformer;
 
 @Path("/jobcvs")
 public class JobCVsResource {
 
+	@Inject
+	private ModelsTransformer modelsTransformer;
+
+	@Inject
+	private ResponseProviderFactory responseProviderFactory;
+
+	@Inject
+	private DaoFactory daoFactory;
+
 	@GET
 	@Produces("application/json")
 	public Response getJSON() {
-		DataSource dataSource = new MySQLSource();
-		JobAccountPersistence jobAccountPersistence = new JobCvDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		JobAccountPersistence jobAccountPersistence = this.daoFactory.getJobCvDao();
 		JobAccountController profilesController = new JobCVsController(jobAccountPersistence, modelsTransformer,
 				responseProviderFactory);
 		Response response = profilesController.get();
@@ -42,10 +46,7 @@ public class JobCVsResource {
 	@POST
 	@Produces("application/json")
 	public Response create(@Context HttpServletRequest request) {
-		DataSource dataSource = new MySQLSource();
-		JobAccountPersistence jobAccountPersistence = new JobCvDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+		JobAccountPersistence jobAccountPersistence = this.daoFactory.getJobCvDao();
 		JobAccountController profilesController = new JobCVsController(jobAccountPersistence, modelsTransformer,
 				responseProviderFactory);
 		HttpRequest httpRequest = new HttpRequest(request);
@@ -57,11 +58,8 @@ public class JobCVsResource {
 	@GET
 	@Produces("application/json")
 	@Path("/{id}")
-	public Response getJSON(@PathParam("id") int id) {
-		DataSource dataSource = new MySQLSource();
-		JobAccountPersistence jobAccountPersistence = new JobCvDao(dataSource);
-		ModelsTransformer modelsTransformer = new JSONModelsTransformer();
-		ResponseProviderFactory responseProviderFactory = new ResponseProviderFactory();
+	public Response getJSON(@PathParam("id") Integer id) {
+		JobAccountPersistence jobAccountPersistence = this.daoFactory.getJobCvDao();
 		JobAccountController profilesController = new JobCVsController(jobAccountPersistence, modelsTransformer,
 				responseProviderFactory);
 		Response response = profilesController.select(id);
